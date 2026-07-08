@@ -2,7 +2,7 @@
 
 Applicazione di studio completa per la **prova scritta tecnica** del concorso RIPAM/Formez PA, profilo **Funzionario Informatico** (codici INF). Un unico file HTML, senza dipendenze e senza server: si apre nel browser, funziona anche offline e salva i progressi in locale.
 
-**Demo:** apri `index.html` nel browser, oppure pubblicala con GitHub Pages.
+**Demo:** apri `index.html` nel browser, oppure vai su https://fabion4.github.io/ripinfpractice.
 
 ## Perché questa app
 
