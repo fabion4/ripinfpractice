@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Suite RIPAM INF — Funzionario Informatico · 7 giorni</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#17324D; --blu:#0066CC; --paper:#F5F7FA; --card:#FFFFFF; --ink:#16232F;
+  --muted:#5C6F82; --line:#D9E2EC; --ok:#007A52; --ok-bg:#E6F5EF; --err:#CE2B37; --err-bg:#FBEBED;
+  --amber:#C99700; --amber-bg:#FFF6DE; --radius:10px;
+  --shadow:0 1px 3px rgba(23,50,77,.08),0 4px 14px rgba(23,50,77,.06);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:'Titillium Web',system-ui,-apple-system,sans-serif;background:var(--paper);color:var(--ink);font-size:16px;line-height:1.5}
+button{font-family:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--blu);outline-offset:2px}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+
+/* Header */
+header{background:var(--navy);color:#fff;padding:14px 16px 10px;position:sticky;top:0;z-index:50}
+.hrow{display:flex;align-items:baseline;justify-content:space-between;max-width:960px;margin:0 auto;gap:10px}
+.wordmark{font-weight:900;font-size:1.15rem;letter-spacing:.04em;text-transform:uppercase}
+.wordmark small{font-weight:400;opacity:.75;font-size:.72rem;letter-spacing:.12em;display:block}
+.soglia{min-width:150px;flex:0 0 auto;text-align:right}
+.soglia .lbl{font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;opacity:.8}
+.meter{position:relative;height:10px;background:rgba(255,255,255,.18);border-radius:6px;margin-top:4px;overflow:visible}
+.meter .fill{height:100%;border-radius:6px;background:linear-gradient(90deg,#4DA3FF,#8FD3A9);width:0%;transition:width .5s ease}
+.meter .notch{position:absolute;top:-4px;bottom:-4px;width:3px;background:#FFD23F;left:70%;border-radius:2px}
+.meter .val{font-size:.78rem;font-weight:700;margin-top:3px;display:block}
+
+/* Tabs */
+nav{background:var(--navy);position:sticky;top:64px;z-index:49;border-top:1px solid rgba(255,255,255,.12)}
+.tabs{display:flex;overflow-x:auto;max-width:960px;margin:0 auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{background:none;border:none;color:rgba(255,255,255,.72);padding:11px 14px;font-size:.86rem;font-weight:600;white-space:nowrap;border-bottom:3px solid transparent;letter-spacing:.02em}
+.tab[aria-selected="true"]{color:#fff;border-bottom-color:#FFD23F}
+
+main{max-width:960px;margin:0 auto;padding:18px 14px 90px}
+h2{font-weight:900;font-size:1.3rem;text-transform:uppercase;letter-spacing:.03em;color:var(--navy);margin-bottom:4px}
+.sub{color:var(--muted);font-size:.92rem;margin-bottom:16px}
+.eyebrow{font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--blu);font-weight:700}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin-bottom:14px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:640px){.grid2{grid-template-columns:1fr}}
+
+/* Scoring chips — signature visual language */
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.chip{font-size:.74rem;font-weight:700;padding:3px 9px;border-radius:20px;border:1.5px solid}
+.chip.plus{color:var(--ok);border-color:var(--ok);background:var(--ok-bg)}
+.chip.minus{color:var(--err);border-color:var(--err);background:var(--err-bg)}
+.chip.zero{color:var(--muted);border-color:var(--line);background:var(--paper)}
+
+/* Buttons */
+.btn{display:inline-block;background:var(--blu);color:#fff;border:none;border-radius:8px;padding:11px 18px;font-weight:700;font-size:.95rem;letter-spacing:.02em}
+.btn:hover{background:#0053a6}
+.btn.sec{background:#fff;color:var(--blu);border:2px solid var(--blu)}
+.btn.sec:hover{background:#EDF4FC}
+.btn.warn{background:var(--err)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.sm{padding:7px 12px;font-size:.84rem}
+.btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+
+/* Piano */
+.day{border-left:5px solid var(--line);padding-left:14px;margin-bottom:18px;position:relative}
+.day.today{border-left-color:#FFD23F}
+.day.done{border-left-color:var(--ok)}
+.day h3{font-weight:900;color:var(--navy);font-size:1.02rem;text-transform:uppercase;letter-spacing:.02em}
+.day .dmeta{font-size:.8rem;color:var(--muted);margin-bottom:8px}
+.task{display:flex;align-items:flex-start;gap:10px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;margin-bottom:6px;background:#fff}
+.task input{width:20px;height:20px;margin-top:2px;accent-color:var(--ok);flex:0 0 auto}
+.task.done label{text-decoration:line-through;color:var(--muted)}
+.task label{font-size:.92rem;flex:1}
+.task .min{font-size:.74rem;font-weight:700;color:var(--blu);white-space:nowrap;background:#EDF4FC;border-radius:14px;padding:2px 8px}
+.dprog{font-size:.78rem;font-weight:700;color:var(--ok)}
+
+/* Quiz */
+.qtopic{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.tbtn{border:1.5px solid var(--line);background:#fff;border-radius:20px;padding:7px 13px;font-size:.82rem;font-weight:600;color:var(--ink)}
+.tbtn.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.tbtn .n{opacity:.6;font-size:.74rem}
+.qbox .qtext{font-size:1.04rem;font-weight:600;margin-bottom:14px}
+.qmeta{display:flex;justify-content:space-between;align-items:center;font-size:.76rem;color:var(--muted);margin-bottom:10px;letter-spacing:.06em;text-transform:uppercase;font-weight:700}
+.opt{display:block;width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:8px;padding:11px 13px;margin-bottom:8px;font-size:.94rem}
+.opt:hover{border-color:var(--blu)}
+.opt.sel{border-color:var(--blu);background:#EDF4FC}
+.opt.right{border-color:var(--ok);background:var(--ok-bg);font-weight:700}
+.opt.wrong{border-color:var(--err);background:var(--err-bg)}
+.opt:disabled{cursor:default}
+.expl{border-left:4px solid var(--blu);background:#EDF4FC;padding:10px 12px;border-radius:0 8px 8px 0;font-size:.9rem;margin-top:10px}
+.expl b{color:var(--navy)}
+.verdict{font-weight:900;font-size:.95rem;margin-top:10px;text-transform:uppercase;letter-spacing:.04em}
+.verdict.ok{color:var(--ok)}.verdict.ko{color:var(--err)}
+
+/* Timer / mock */
+.timer{font-weight:900;font-size:1.5rem;color:var(--navy);font-variant-numeric:tabular-nums}
+.timer.low{color:var(--err)}
+.mockbar{display:flex;justify-content:space-between;align-items:center;background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:10px 14px;margin-bottom:12px;position:sticky;top:118px;z-index:40;box-shadow:var(--shadow)}
+.qnav{display:flex;flex-wrap:wrap;gap:5px;margin-top:12px}
+.qn{width:32px;height:32px;border-radius:6px;border:1.5px solid var(--line);background:#fff;font-size:.76rem;font-weight:700}
+.qn.answered{background:var(--navy);color:#fff;border-color:var(--navy)}
+.qn.cur{outline:3px solid #FFD23F}
+.result-big{font-size:2.4rem;font-weight:900;color:var(--navy)}
+.result-big small{font-size:1rem;color:var(--muted);font-weight:600}
+.pass{color:var(--ok)}.fail{color:var(--err)}
+table.brk{width:100%;border-collapse:collapse;font-size:.86rem;margin-top:10px}
+table.brk td,table.brk th{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left}
+table.brk th{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+
+/* Flashcards */
+.fcard{background:var(--navy);color:#fff;border-radius:14px;padding:34px 22px;min-height:190px;display:flex;flex-direction:column;justify-content:center;text-align:center;box-shadow:var(--shadow);margin-bottom:14px}
+.fcard .side{font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;opacity:.6;margin-bottom:12px}
+.fcard .txt{font-size:1.12rem;font-weight:600;line-height:1.55}
+.fcard .txt .gap{background:rgba(255,210,63,.25);border-bottom:2px solid #FFD23F;border-radius:3px;padding:0 6px}
+.srsrow{display:flex;gap:8px}
+.srsrow .btn{flex:1}
+.btn.again{background:var(--err)}.btn.hard{background:var(--amber)}.btn.good{background:var(--ok)}
+.fmeta{font-size:.8rem;color:var(--muted);text-align:center;margin-bottom:8px}
+
+/* Stats */
+.stat{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);font-size:.9rem}
+.stat:last-child{border-bottom:none}
+.bar{height:8px;background:var(--line);border-radius:5px;overflow:hidden;flex:1;margin:0 12px}
+.bar i{display:block;height:100%;background:var(--blu)}
+.bar i.low{background:var(--err)}.bar i.mid{background:var(--amber)}.bar i.hi{background:var(--ok)}
+.pct{font-weight:900;min-width:52px;text-align:right}
+.empty{text-align:center;color:var(--muted);padding:30px 10px;font-size:.94rem}
+.badge{display:inline-block;background:var(--err-bg);color:var(--err);font-weight:900;border-radius:12px;font-size:.72rem;padding:2px 8px;margin-left:6px}
+.note{font-size:.8rem;color:var(--muted);margin-top:10px}
+.kbd{background:var(--navy);color:#fff;border-radius:4px;padding:1px 6px;font-size:.78rem;font-weight:700}
+hr.sep{border:none;border-top:1px solid var(--line);margin:14px 0}
+</style>
+</head>
+<body>
+<header>
+  <div class="hrow">
+    <div class="wordmark">Suite RIPAM · INF<small>Funzionario Informatico — Prova scritta</small></div>
+    <div class="soglia">
+      <span class="lbl">Ultimo mock · soglia 21/30</span>
+      <div class="meter"><div class="fill" id="hFill"></div><div class="notch" title="Soglia 21/30"></div></div>
+      <span class="val" id="hVal">— / 30</span>
+    </div>
+  </div>
+</header>
+<nav><div class="tabs" role="tablist" id="tabbar"></div></nav>
+<main id="view"></main>
+<script>
+// ============ BANCA DATI QUESITI (stile RIPAM) ============
+const TOPICS={reti:'Reti e protocolli',sicurezza:'Sicurezza e GDPR',db:'Basi di dati e SQL',sweng:'Ingegneria del software',pm:'Project mgmt e Agile',pa_dig:'CAD e digitalizzazione PA',so_cloud:'Sistemi operativi e Cloud',dir_amm:'Diritto amministrativo',dir_pen:'Penale e Costituzione',pubbl_imp:'Pubblico impiego',inglese:'Inglese B1',logica:'Logica',situazionale:'Situazionali'};
+const MOCK_WEIGHTS={reti:3,sicurezza:3,db:3,sweng:2,pm:2,pa_dig:4,so_cloud:2,dir_amm:2,dir_pen:1,pubbl_imp:2,inglese:1};
+const BANK=[
+// ---- RETI E PROTOCOLLI ----
+{t:'reti',q:'Nel modello ISO/OSI, il protocollo TCP opera al livello:',o:['Trasporto (4)','Rete (3)','Sessione (5)','Applicazione (7)'],c:0,e:'TCP è un protocollo di livello 4 (Trasporto): garantisce consegna affidabile, ordinata e con controllo di flusso. IP opera invece al livello 3 (Rete).'},
+{t:'reti',q:'Quale porta utilizza di default il protocollo HTTPS?',o:['80','21','443','25'],c:2,e:'HTTPS usa la porta 443. HTTP usa la 80, FTP la 21, SMTP la 25. Le porte note (well-known) vanno da 0 a 1023.'},
+{t:'reti',q:'Il protocollo DNS serve principalmente a:',o:['Assegnare dinamicamente indirizzi IP agli host','Tradurre nomi di dominio in indirizzi IP','Cifrare il traffico web','Instradare i pacchetti tra router'],c:1,e:'Il DNS (Domain Name System) risolve i nomi di dominio (es. www.governo.it) in indirizzi IP. L\'assegnazione dinamica di IP è compito del DHCP.'},
+{t:'reti',q:'Una rete con maschera di sottorete /24 (255.255.255.0) può indirizzare al massimo:',o:['256 host','254 host','512 host','128 host'],c:1,e:'Con /24 restano 8 bit per gli host: 2^8=256 indirizzi, meno indirizzo di rete e broadcast = 254 host utilizzabili.'},
+{t:'reti',q:'Qual è la differenza principale tra TCP e UDP?',o:['UDP è orientato alla connessione, TCP no','TCP garantisce consegna affidabile e ordinata, UDP no','TCP è più veloce di UDP','UDP effettua il controllo di congestione'],c:1,e:'TCP è connection-oriented con ritrasmissione, ordinamento e controllo di flusso/congestione; UDP è connectionless, leggero e senza garanzie: adatto a streaming, DNS, VoIP.'},
+{t:'reti',q:'Il protocollo ARP è utilizzato per:',o:['Risolvere un indirizzo IP nel corrispondente indirizzo MAC','Assegnare indirizzi IP','Trasferire file tra host','Sincronizzare gli orologi di rete'],c:0,e:'ARP (Address Resolution Protocol) mappa gli indirizzi IP (livello 3) sugli indirizzi fisici MAC (livello 2) all\'interno della rete locale.'},
+{t:'reti',q:'Un indirizzo IPv6 è composto da:',o:['32 bit','64 bit','128 bit','256 bit'],c:2,e:'IPv6 usa indirizzi a 128 bit (otto gruppi di 4 cifre esadecimali), contro i 32 bit di IPv4: risolve l\'esaurimento degli indirizzi.'},
+{t:'reti',q:'Quale dispositivo opera tipicamente al livello 3 del modello OSI instradando i pacchetti tra reti diverse?',o:['Hub','Switch','Router','Repeater'],c:2,e:'Il router opera al livello Rete instradando in base agli indirizzi IP. Lo switch opera al livello 2 (MAC), hub e repeater al livello 1.'},
+{t:'reti',q:'Il protocollo SMTP è utilizzato per:',o:['La ricezione della posta elettronica dal server','L\'invio della posta elettronica','Il trasferimento sicuro di file','La navigazione web'],c:1,e:'SMTP (Simple Mail Transfer Protocol, porta 25/587) gestisce l\'invio della posta. La ricezione avviene con POP3 (110) o IMAP (143).'},
+{t:'reti',q:'Una VPN (Virtual Private Network) consente di:',o:['Aumentare la larghezza di banda della connessione','Creare un canale cifrato su una rete pubblica','Eliminare la necessità di indirizzi IP','Sostituire il firewall aziendale'],c:1,e:'La VPN crea un tunnel cifrato su rete pubblica (Internet), garantendo riservatezza e integrità del traffico, ad es. per il lavoro agile nella PA.'},
+{t:'reti',q:'Il three-way handshake (SYN, SYN-ACK, ACK) è la procedura con cui:',o:['UDP verifica l\'integrità dei datagrammi','TCP stabilisce una connessione tra client e server','Il DNS risolve un nome di dominio','Il DHCP rilascia un indirizzo IP'],c:1,e:'Il three-way handshake è la sequenza di apertura di una connessione TCP: il client invia SYN, il server risponde SYN-ACK, il client conferma con ACK.'},
+{t:'reti',q:'In una architettura client-server, il load balancer ha la funzione di:',o:['Cifrare le comunicazioni tra i server','Distribuire il traffico tra più server per bilanciare il carico','Memorizzare copie statiche delle pagine web','Tradurre gli indirizzi privati in pubblici'],c:1,e:'Il load balancer distribuisce le richieste su più server, migliorando scalabilità, disponibilità e tempi di risposta del servizio.'},
+// ---- SICUREZZA E GDPR ----
+{t:'sicurezza',q:'La cosiddetta "triade CIA" della sicurezza informatica indica:',o:['Cifratura, Identificazione, Autenticazione','Riservatezza, Integrità, Disponibilità','Controllo, Ispezione, Audit','Certificazione, Identità, Accesso'],c:1,e:'CIA = Confidentiality (riservatezza), Integrity (integrità), Availability (disponibilità): i tre obiettivi fondamentali della sicurezza delle informazioni.'},
+{t:'sicurezza',q:'Un attacco di tipo SQL injection consiste nel:',o:['Saturare un server con richieste per renderlo indisponibile','Inserire codice SQL malevolo negli input di un\'applicazione per manipolare il database','Intercettare il traffico di rete tra due host','Cifrare i dati della vittima chiedendo un riscatto'],c:1,e:'La SQL injection sfrutta input non validati per iniettare comandi SQL. Si previene con prepared statement/query parametrizzate e validazione degli input.'},
+{t:'sicurezza',q:'Il ransomware è un malware che:',o:['Registra i tasti digitati dall\'utente','Cifra i dati della vittima e richiede un riscatto per la decifratura','Mostra pubblicità indesiderata','Si replica autonomamente senza intervento umano ma non danneggia i dati'],c:1,e:'Il ransomware cifra file o sistemi e chiede un riscatto (ransom). Difese: backup offline, patch, segmentazione, MFA e formazione degli utenti.'},
+{t:'sicurezza',q:'Nella crittografia asimmetrica:',o:['Mittente e destinatario usano la stessa chiave segreta','Si usano una chiave pubblica e una privata matematicamente correlate','Non è possibile firmare digitalmente i documenti','La chiave deve essere scambiata su canale sicuro prima della comunicazione'],c:1,e:'La crittografia asimmetrica (es. RSA) usa una coppia di chiavi: la pubblica cifra o verifica, la privata decifra o firma. È alla base della firma digitale.'},
+{t:'sicurezza',q:'Una funzione di hash crittografica (es. SHA-256) garantisce principalmente:',o:['La riservatezza del messaggio','L\'integrità del dato, producendo un\'impronta univoca e non invertibile','La disponibilità del servizio','L\'autenticazione a due fattori'],c:1,e:'L\'hash produce un digest a lunghezza fissa: qualunque modifica al dato cambia l\'impronta. Non è cifratura: non garantisce riservatezza e non è invertibile.'},
+{t:'sicurezza',q:'Il phishing è:',o:['Un attacco che sfrutta vulnerabilità del sistema operativo','Una tecnica di ingegneria sociale che induce la vittima a fornire dati sensibili tramite messaggi ingannevoli','Un software per il monitoraggio della rete','Un attacco brute force sulle password'],c:1,e:'Il phishing usa e-mail o messaggi contraffatti per carpire credenziali o dati. Varianti: spear phishing (mirato), smishing (SMS), vishing (telefonico).'},
+{t:'sicurezza',q:'L\'autenticazione a più fattori (MFA) richiede la combinazione di:',o:['Due password diverse','Almeno due elementi tra: qualcosa che conosco, che possiedo, che sono','Username e password complessa','Un certificato digitale e un antivirus aggiornato'],c:1,e:'MFA combina fattori di categorie diverse: conoscenza (password), possesso (token, smartphone), inerenza (biometria). Due password sono un solo fattore.'},
+{t:'sicurezza',q:'Ai sensi del GDPR (Reg. UE 2016/679), in caso di violazione dei dati personali (data breach), il titolare deve notificare al Garante:',o:['Entro 24 ore dalla scoperta','Senza ingiustificato ritardo e, ove possibile, entro 72 ore','Entro 30 giorni','Solo se la violazione riguarda dati giudiziari'],c:1,e:'Art. 33 GDPR: notifica all\'autorità di controllo senza ingiustificato ritardo, ove possibile entro 72 ore, salvo che sia improbabile un rischio per i diritti degli interessati.'},
+{t:'sicurezza',q:'Il Responsabile della Protezione dei Dati (DPO) previsto dal GDPR:',o:['È obbligatorio per tutte le imprese private','È sempre obbligatorio per le autorità e gli organismi pubblici','Coincide necessariamente con il titolare del trattamento','Ha esclusivamente compiti sanzionatori'],c:1,e:'Art. 37 GDPR: la designazione del DPO è sempre obbligatoria per autorità e organismi pubblici. Il DPO informa, sorveglia e coopera con il Garante.'},
+{t:'sicurezza',q:'Il principio di "privacy by design" (art. 25 GDPR) impone di:',o:['Nominare un DPO in ogni progetto','Integrare la protezione dei dati fin dalla progettazione di sistemi e processi','Cifrare tutti i dati personali senza eccezioni','Pubblicare l\'informativa privacy sul sito istituzionale'],c:1,e:'Privacy by design e by default: le tutele vanno integrate fin dalla progettazione e le impostazioni predefinite devono trattare solo i dati necessari.'},
+{t:'sicurezza',q:'La Direttiva NIS 2 (UE 2022/2555), recepita in Italia con il D.Lgs. 138/2024, riguarda:',o:['La tutela del diritto d\'autore online','Misure per un livello comune elevato di cibersicurezza dei soggetti essenziali e importanti','La disciplina del commercio elettronico','L\'accessibilità dei siti web pubblici'],c:1,e:'NIS 2 rafforza la cybersicurezza di soggetti pubblici e privati essenziali/importanti. In Italia l\'autorità nazionale competente è l\'ACN (Agenzia per la Cybersicurezza Nazionale).'},
+{t:'sicurezza',q:'Un firewall di tipo stateful si distingue perché:',o:['Analizza solo gli header dei singoli pacchetti senza contesto','Tiene traccia dello stato delle connessioni attive e filtra in base ad esso','Opera esclusivamente a livello applicativo','Sostituisce l\'antivirus sugli endpoint'],c:1,e:'Il firewall stateful mantiene una tabella delle connessioni e valuta i pacchetti nel contesto della sessione, a differenza del filtro stateless a singolo pacchetto.'},
+{t:'sicurezza',q:'Il modello di sicurezza "Zero Trust" si basa sul principio:',o:['La rete interna è sempre affidabile','Non fidarsi mai, verificare sempre: ogni accesso va autenticato e autorizzato','Il perimetro aziendale è la principale linea di difesa','Gli utenti interni non necessitano di autenticazione'],c:1,e:'Zero Trust: nessuna fiducia implicita basata sulla posizione di rete; verifica continua di identità, dispositivo e contesto, con privilegio minimo.'},
+{t:'sicurezza',q:'Un attacco DDoS (Distributed Denial of Service) mira a:',o:['Sottrarre credenziali tramite e-mail ingannevoli','Rendere indisponibile un servizio saturandolo di richieste da più sorgenti','Modificare i record del database','Intercettare le comunicazioni cifrate'],c:1,e:'Il DDoS compromette la disponibilità (la "A" della triade CIA) inondando il bersaglio di traffico generato da molte macchine, spesso una botnet.'},
+// ---- BASI DI DATI E SQL ----
+{t:'db',q:'In un database relazionale, la chiave primaria:',o:['Può assumere valori NULL','Identifica univocamente ogni riga della tabella','Può essere duplicata se la tabella è indicizzata','Serve solo a ordinare i record'],c:1,e:'La primary key identifica univocamente ogni tupla: valori unici e NOT NULL. Le chiavi esterne (foreign key) realizzano i legami tra tabelle.'},
+{t:'db',q:'Le proprietà ACID di una transazione sono:',o:['Atomicità, Coerenza, Isolamento, Durabilità','Accesso, Controllo, Integrità, Disponibilità','Autenticazione, Cifratura, Integrità, Durabilità','Atomicità, Concorrenza, Indicizzazione, Denormalizzazione'],c:0,e:'ACID: Atomicity (tutto o niente), Consistency (stato valido), Isolation (transazioni indipendenti), Durability (effetti permanenti dopo il commit).'},
+{t:'db',q:'Quale istruzione SQL restituisce i dipartimenti con più di 10 dipendenti?',o:["SELECT dip FROM personale WHERE COUNT(*)>10","SELECT dip FROM personale GROUP BY dip HAVING COUNT(*)>10","SELECT dip FROM personale GROUP BY dip WHERE COUNT(*)>10","SELECT COUNT(dip)>10 FROM personale"],c:1,e:'Le condizioni sulle funzioni di aggregazione si esprimono con HAVING dopo GROUP BY. WHERE filtra le righe prima dell\'aggregazione e non ammette funzioni aggregate.'},
+{t:'db',q:'La terza forma normale (3NF) richiede che:',o:['Ogni attributo sia multivalore','Non esistano dipendenze transitive degli attributi non chiave dalla chiave','Tutte le tabelle abbiano al massimo tre colonne','Ogni tabella contenga una sola chiave esterna'],c:1,e:'3NF: la relazione è in 2NF e nessun attributo non chiave dipende transitivamente dalla chiave. La normalizzazione riduce ridondanze e anomalie.'},
+{t:'db',q:'Una LEFT JOIN tra le tabelle A e B restituisce:',o:['Solo le righe presenti in entrambe le tabelle','Tutte le righe di A e le corrispondenze di B, con NULL dove mancano','Tutte le righe di B e le corrispondenze di A','Il prodotto cartesiano di A e B'],c:1,e:'LEFT (OUTER) JOIN conserva tutte le righe della tabella di sinistra; per le righe senza corrispondenza a destra i campi di B valgono NULL. La INNER JOIN restituisce solo le corrispondenze.'},
+{t:'db',q:'Un indice su una colonna di un database serve principalmente a:',o:['Garantire l\'integrità referenziale','Velocizzare le operazioni di ricerca e lettura','Ridurre lo spazio occupato dalla tabella','Cifrare i dati sensibili'],c:1,e:'L\'indice (tipicamente B-tree) accelera SELECT e ricerche, al costo di spazio aggiuntivo e di un lieve rallentamento di INSERT/UPDATE/DELETE.'},
+{t:'db',q:'Il comando SQL per eliminare una tabella e la sua struttura è:',o:['DELETE TABLE utenti','TRUNCATE utenti','DROP TABLE utenti','REMOVE TABLE utenti'],c:2,e:'DROP TABLE elimina struttura e dati. DELETE rimuove righe (filtrabili con WHERE), TRUNCATE svuota la tabella mantenendone la struttura.'},
+{t:'db',q:'Un database NoSQL orientato ai documenti (es. MongoDB) si caratterizza per:',o:['Schema rigido definito a priori','Memorizzazione di documenti semi-strutturati (es. JSON) con schema flessibile','Uso esclusivo del linguaggio SQL standard','Assenza di meccanismi di replica'],c:1,e:'I document store gestiscono documenti JSON/BSON con schema flessibile, scalabilità orizzontale e alta disponibilità: adatti a dati semi-strutturati.'},
+{t:'db',q:'L\'integrità referenziale garantisce che:',o:['Ogni valore di chiave esterna corrisponda a una chiave primaria esistente nella tabella riferita','Le password siano memorizzate cifrate','Ogni tabella abbia un indice','Le transazioni siano isolate tra loro'],c:0,e:'L\'integrità referenziale vincola le foreign key a riferire tuple esistenti; il DBMS può reagire con RESTRICT, CASCADE o SET NULL su cancellazioni/modifiche.'},
+{t:'db',q:'Una vista (VIEW) in SQL è:',o:['Una copia fisica dei dati salvata su disco','Una tabella virtuale definita da una query, senza duplicazione dei dati','Un backup automatico della tabella','Un indice materializzato obbligatorio'],c:1,e:'La vista è una query salvata che si comporta come tabella virtuale: semplifica interrogazioni complesse e limita la visibilità dei dati (sicurezza).'},
+{t:'db',q:'Nel modello Entità-Relazione, una relazione "molti a molti" tra due entità si implementa nel modello relazionale con:',o:['Una chiave esterna in una delle due tabelle','Una tabella associativa contenente le chiavi delle due entità','Un attributo multivalore','Una vista materializzata'],c:1,e:'La N:M si scompone in due 1:N tramite una tabella ponte (associativa) che contiene le foreign key verso le due entità, spesso come chiave primaria composta.'},
+{t:'db',q:'Il linguaggio DDL (Data Definition Language) comprende comandi come:',o:['SELECT, INSERT, UPDATE','CREATE, ALTER, DROP','GRANT, REVOKE soltanto','COMMIT, ROLLBACK soltanto'],c:1,e:'DDL definisce la struttura (CREATE, ALTER, DROP); DML manipola i dati (SELECT, INSERT, UPDATE, DELETE); DCL gestisce i permessi (GRANT, REVOKE); TCL le transazioni.'},
+// ---- INGEGNERIA DEL SOFTWARE ----
+{t:'sweng',q:'Nel modello di sviluppo a cascata (waterfall):',o:['Le fasi si sovrappongono liberamente','Le fasi si susseguono in sequenza e ogni fase inizia al termine della precedente','Il software viene rilasciato in iterazioni di due settimane','I requisiti possono cambiare in qualsiasi momento senza impatti'],c:1,e:'Il waterfall è sequenziale: requisiti, progettazione, implementazione, test, manutenzione. Rigido ai cambiamenti, adatto a requisiti stabili e ben definiti.'},
+{t:'sweng',q:'Il test di tipo "black box" verifica:',o:['La struttura interna del codice e la copertura dei rami','Il comportamento del software rispetto alle specifiche, senza conoscerne il codice','Solo le prestazioni sotto carico','La qualità dei commenti nel codice'],c:1,e:'Black box: si validano input/output rispetto ai requisiti ignorando l\'implementazione. White box: si esamina la logica interna (copertura di istruzioni e rami).'},
+{t:'sweng',q:'Il test di regressione serve a:',o:['Misurare il tempo di risposta del sistema','Verificare che le modifiche non abbiano introdotto difetti in funzionalità già funzionanti','Testare l\'usabilità dell\'interfaccia','Validare i requisiti con il committente'],c:1,e:'Dopo ogni modifica si riesegue una suite di test per accertare che il comportamento preesistente non sia stato compromesso: è la pratica cardine della manutenzione.'},
+{t:'sweng',q:'In UML, il diagramma dei casi d\'uso (use case) rappresenta:',o:['La struttura delle classi e le loro relazioni','Le interazioni tra attori esterni e funzionalità del sistema','La sequenza temporale dei messaggi tra oggetti','Il deployment fisico dei componenti'],c:1,e:'Lo use case diagram mostra attori e funzionalità offerte dal sistema: strumento di analisi dei requisiti. Classi, sequenze e deployment hanno diagrammi dedicati.'},
+{t:'sweng',q:'Il principio di "information hiding" nella programmazione a oggetti si realizza tramite:',o:['L\'ereditarietà multipla','L\'incapsulamento: lo stato interno è accessibile solo tramite interfacce definite','Il polimorfismo','L\'uso di variabili globali'],c:1,e:'L\'incapsulamento nasconde i dettagli implementativi ed espone interfacce controllate: riduce l\'accoppiamento e facilita la manutenzione.'},
+{t:'sweng',q:'Nell\'architettura a microservizi:',o:['L\'applicazione è un unico blocco distribuito su più server','L\'applicazione è scomposta in servizi autonomi, indipendenti e comunicanti via API','Tutti i servizi condividono lo stesso database','Il deployment è possibile solo on-premise'],c:1,e:'I microservizi sono componenti piccoli, autonomi e distribuibili indipendentemente, spesso con database dedicato, comunicanti via API (REST, messaging).'},
+{t:'sweng',q:'Un\'API REST utilizza tipicamente:',o:['Esclusivamente il protocollo FTP','I metodi HTTP (GET, POST, PUT, DELETE) su risorse identificate da URI','Connessioni persistenti proprietarie','Solo il formato XML'],c:1,e:'REST è uno stile architetturale basato su HTTP: risorse identificate da URI, operazioni con i metodi standard, rappresentazioni tipicamente JSON, comunicazione stateless.'},
+{t:'sweng',q:'Il "refactoring" del codice consiste nel:',o:['Aggiungere nuove funzionalità al software','Migliorare la struttura interna del codice senza modificarne il comportamento esterno','Correggere i bug segnalati dagli utenti','Riscrivere il software in un altro linguaggio'],c:1,e:'Il refactoring migliora leggibilità, manutenibilità e design a comportamento invariato; è protetto dai test automatici (in particolare di regressione).'},
+{t:'sweng',q:'Nel versionamento del codice con Git, il comando "commit":',o:['Invia le modifiche al repository remoto','Registra uno snapshot delle modifiche nel repository locale','Scarica le modifiche dal repository remoto','Crea un nuovo branch'],c:1,e:'git commit salva le modifiche in area di stage nel repository locale; push le invia al remoto, pull le scarica, branch crea rami di sviluppo.'},
+{t:'sweng',q:'I test di accettazione (UAT) hanno lo scopo di:',o:['Verificare le singole funzioni del codice in isolamento','Validare che il sistema soddisfi i requisiti dal punto di vista dell\'utente/committente','Misurare la copertura del codice','Individuare vulnerabilità di sicurezza'],c:1,e:'La User Acceptance Test è l\'ultima verifica prima del rilascio: l\'utente valida il sistema rispetto ai requisiti concordati. Unit, integrazione e sistema la precedono.'},
+// ---- PROJECT MANAGEMENT E AGILE ----
+{t:'pm',q:'In ITIL, la differenza tra "incident" e "problem" è:',o:['Sono sinonimi','L\'incident è un\'interruzione o degrado del servizio; il problem è la causa sottostante di uno o più incident','Il problem è sempre più urgente dell\'incident','L\'incident riguarda solo l\'hardware'],c:1,e:'Incident management ripristina il servizio il prima possibile; problem management indaga e rimuove la causa radice per prevenire il ripetersi degli incident.'},
+{t:'pm',q:'Lo SLA (Service Level Agreement) è:',o:['Un documento tecnico di architettura','Un accordo che definisce i livelli di servizio garantiti tra fornitore e cliente','Un piano di test','Il registro dei rischi di progetto'],c:1,e:'Lo SLA formalizza i livelli di servizio (es. disponibilità, tempi di risposta e ripristino) con indicatori misurabili ed eventuali penali: centrale nei contratti ICT della PA.'},
+{t:'pm',q:'Nel framework Scrum, lo Sprint è:',o:['La riunione giornaliera di 15 minuti','Un\'iterazione a durata fissa (tipicamente 1-4 settimane) in cui si produce un incremento di prodotto','Il documento dei requisiti','La fase finale di collaudo'],c:1,e:'Lo Sprint è il time-box centrale di Scrum: al termine si ha un incremento potenzialmente rilasciabile. La riunione quotidiana è il Daily Scrum (15 minuti).'},
+{t:'pm',q:'In Scrum, il Product Owner è responsabile di:',o:['Rimuovere gli impedimenti del team','Massimizzare il valore del prodotto gestendo e ordinando il Product Backlog','Assegnare i compiti giornalieri agli sviluppatori','Redigere il codice di condotta del team'],c:1,e:'Il PO gestisce il Product Backlog e ne definisce le priorità in ottica di valore. Lo Scrum Master rimuove gli impedimenti e cura il processo; il team si auto-organizza.'},
+{t:'pm',q:'Il Manifesto Agile privilegia:',o:['I processi e gli strumenti rispetto agli individui','La documentazione esaustiva rispetto al software funzionante','La risposta al cambiamento rispetto al seguire un piano','La negoziazione contrattuale rispetto alla collaborazione col cliente'],c:2,e:'I quattro valori Agile: individui e interazioni, software funzionante, collaborazione col cliente, risposta al cambiamento — più dei rispettivi contrapposti.'},
+{t:'pm',q:'PRINCE2 è:',o:['Un linguaggio di programmazione','Una metodologia strutturata di project management basata su processi, temi e principi','Un framework per la sicurezza delle reti','Uno standard per la qualità del codice'],c:1,e:'PRINCE2 (PRojects IN Controlled Environments) organizza il progetto per fasi con business case continuo, ruoli definiti e gestione per eccezioni. È tra le metodologie citate nel bando insieme a PMI, IPMA, COBIT, CMMI.'},
+{t:'pm',q:'Nel diagramma di Gantt, il "percorso critico" rappresenta:',o:['Le attività a maggior rischio di sicurezza','La sequenza di attività la cui durata determina la durata minima del progetto','Le attività assegnate al project manager','Le milestone contrattuali'],c:1,e:'Il critical path è la catena di attività senza margini (slack): ogni ritardo su di esso ritarda l\'intero progetto.'},
+{t:'pm',q:'COBIT è un framework orientato principalmente a:',o:['Lo sviluppo agile del software','La governance e la gestione dell\'IT aziendale','Il testing automatizzato','La progettazione di database'],c:1,e:'COBIT (ISACA) fornisce obiettivi di controllo e pratiche per la governance IT: allineamento IT-business, gestione di rischi e risorse. ITIL è invece focalizzato sul service management.'},
+{t:'pm',q:'In Kanban, il limite WIP (Work In Progress) serve a:',o:['Aumentare il numero di attività avviate contemporaneamente','Limitare le attività in corso per migliorare il flusso e ridurre i tempi di attraversamento','Bloccare le richieste dei clienti','Misurare la velocity del team'],c:1,e:'Limitare il WIP evita il multitasking eccessivo, evidenzia i colli di bottiglia e migliora il flusso: principio cardine del metodo Kanban (Lean).'},
+{t:'pm',q:'La metodologia CMMI valuta:',o:['La sicurezza fisica dei data center','Il livello di maturità dei processi di sviluppo di un\'organizzazione','La qualità della connettività di rete','Le competenze linguistiche del personale'],c:1,e:'CMMI (Capability Maturity Model Integration) misura la maturità dei processi su livelli progressivi (da Initial a Optimizing), guidando il miglioramento continuo.'},
+// ---- CAD E DIGITALIZZAZIONE PA ----
+{t:'pa_dig',q:'Il Codice dell\'Amministrazione Digitale (CAD) è contenuto nel:',o:['D.Lgs. 165/2001','D.Lgs. 82/2005','DPR 445/2000','D.Lgs. 33/2013'],c:1,e:'Il CAD è il D.Lgs. 7 marzo 2005, n. 82, più volte modificato: disciplina l\'uso delle tecnologie digitali nella PA e i diritti digitali di cittadini e imprese.'},
+{t:'pa_dig',q:'Il Regolamento eIDAS, che disciplina identificazione elettronica e servizi fiduciari nell\'UE, è il:',o:['Reg. UE 2016/679','Reg. UE 910/2014','Reg. UE 2022/2555','Direttiva 2019/1024'],c:1,e:'eIDAS = Reg. UE 910/2014 (aggiornato da eIDAS 2.0, Reg. UE 2024/1183, che introduce il Wallet europeo di identità digitale): firme elettroniche, sigilli, marche temporali, identificazione elettronica.'},
+{t:'pa_dig',q:'SPID (Sistema Pubblico di Identità Digitale) prevede:',o:['Un unico livello di sicurezza','Due livelli di sicurezza','Tre livelli di sicurezza crescenti','Cinque livelli di sicurezza'],c:2,e:'SPID ha 3 livelli: L1 (username e password), L2 (più OTP/app — richiesto per la maggior parte dei servizi PA), L3 (dispositivi/certificati, es. smart card).'},
+{t:'pa_dig',q:'La firma digitale, ai sensi del CAD, è:',o:['Qualsiasi firma apposta con strumenti informatici','Un particolare tipo di firma elettronica qualificata basata su certificato qualificato e chiavi crittografiche asimmetriche','La scansione della firma autografa','Equivalente alla PEC'],c:1,e:'La firma digitale è una firma elettronica qualificata basata su crittografia a chiavi asimmetriche e certificato qualificato: garantisce autenticità, integrità e non ripudio, con l\'efficacia della scrittura privata (art. 20 CAD).'},
+{t:'pa_dig',q:'La PEC (Posta Elettronica Certificata) fornisce al messaggio:',o:['La cifratura end-to-end del contenuto','Valore legale equiparabile alla raccomandata con ricevuta di ritorno','L\'anonimato del mittente','La traduzione automatica degli allegati'],c:1,e:'La PEC attesta invio e consegna con ricevute opponibili ai terzi, con effetti analoghi alla raccomandata A/R. È in evoluzione verso la REM europea (SERC/SERCQ).'},
+{t:'pa_dig',q:'La Piattaforma Digitale Nazionale Dati (PDND), prevista dall\'art. 50-ter del CAD, ha lo scopo di:',o:['Conservare i backup delle PA','Abilitare l\'interoperabilità dei sistemi informativi tramite API tra le amministrazioni','Gestire i pagamenti verso la PA','Erogare la formazione ai dipendenti pubblici'],c:1,e:'La PDND è il catalogo nazionale delle API per lo scambio di dati tra PA secondo il principio "once only": il cittadino non deve fornire più volte gli stessi dati.'},
+{t:'pa_dig',q:'PagoPA è:',o:['Il sistema di conservazione documentale della PA','La piattaforma nazionale per i pagamenti elettronici verso la Pubblica Amministrazione','Il portale del reclutamento pubblico','L\'anagrafe nazionale della popolazione'],c:1,e:'PagoPA è il nodo nazionale dei pagamenti verso PA e gestori di servizi pubblici, obbligatorio ai sensi dell\'art. 5 CAD. Il reclutamento passa da inPA; l\'anagrafe è ANPR.'},
+{t:'pa_dig',q:'L\'ANPR è:',o:['L\'Agenzia Nazionale per la Privacy','L\'Anagrafe Nazionale della Popolazione Residente, banca dati unica che subentra alle anagrafi comunali','L\'albo nazionale dei fornitori ICT','Il registro dei domicili digitali delle imprese'],c:1,e:'L\'ANPR centralizza le anagrafi comunali in un\'unica banca dati nazionale gestita dal Ministero dell\'Interno: certificati anagrafici online e dati coerenti tra amministrazioni.'},
+{t:'pa_dig',q:'Il Piano Triennale per l\'informatica nella PA è predisposto da:',o:['ANAC','AgID (Agenzia per l\'Italia Digitale)','Il Garante Privacy','La Corte dei conti'],c:1,e:'Il Piano Triennale (edizione 2024-2026, con aggiornamenti annuali) è elaborato da AgID: fissa strategia e obiettivi della trasformazione digitale della PA, con principi come cloud-first, API-first, once-only e digital identity.'},
+{t:'pa_dig',q:'Secondo la strategia Cloud Italia, il Polo Strategico Nazionale (PSN) è destinato a ospitare:',o:['Tutti i siti web dei comuni','Dati e servizi strategici e critici della PA in un\'infrastruttura cloud nazionale qualificata','Esclusivamente i dati della sanità','I backup dei privati cittadini'],c:1,e:'Il PSN è l\'infrastruttura cloud nazionale per dati e servizi critici e strategici della PA. La qualificazione dei servizi cloud per la PA è oggi in capo all\'ACN.'},
+{t:'pa_dig',q:'La Legge 4/2004 (Legge Stanca) disciplina:',o:['La firma digitale','L\'accessibilità degli strumenti informatici per le persone con disabilità','Gli appalti ICT','La conservazione digitale'],c:1,e:'La Legge Stanca impone l\'accessibilità di siti e applicazioni (oggi secondo le Linee Guida AgID e le WCAG richiamate dalla EN 301 549), con obblighi per PA e grandi soggetti privati.'},
+{t:'pa_dig',q:'Il domicilio digitale, ai sensi del CAD, è:',o:['La residenza anagrafica del cittadino','Un indirizzo elettronico (PEC o recapito certificato qualificato) valido per le comunicazioni con valore legale','Il profilo SPID dell\'utente','L\'indirizzo IP statico assegnato all\'utente'],c:1,e:'Il domicilio digitale è l\'indirizzo PEC/SERCQ eletto per ricevere comunicazioni con valore legale; è iscritto in registri come INAD (persone fisiche) e INI-PEC (imprese e professionisti).'},
+{t:'pa_dig',q:'Il principio "once only" nella digitalizzazione della PA significa che:',o:['Ogni pratica può essere presentata una sola volta l\'anno','Cittadini e imprese non devono fornire più volte dati già in possesso della PA','Ogni utente può avere una sola identità digitale','I documenti si conservano una sola volta'],c:1,e:'Once only: le amministrazioni riutilizzano i dati già acquisiti, scambiandoli tra loro (interoperabilità/PDND), invece di richiederli nuovamente all\'utente.'},
+{t:'pa_dig',q:'Il protocollo informatico, disciplinato dal DPR 445/2000, ha come nucleo minimo:',o:['Segnatura, classificazione e fascicolazione facoltative','La registrazione di protocollo, la segnatura e la classificazione dei documenti','Solo la scansione dei documenti cartacei','La firma digitale di tutti i documenti in entrata'],c:1,e:'Il nucleo minimo comprende registrazione (numero e dati obbligatori), segnatura e classificazione: garantisce certezza giuridica sulla formazione e ricezione dei documenti.'},
+{t:'pa_dig',q:'La conservazione digitale a norma dei documenti informatici ha lo scopo di:',o:['Ridurre lo spazio su disco','Garantire nel tempo autenticità, integrità, affidabilità, leggibilità e reperibilità dei documenti','Sostituire il protocollo informatico','Cifrare i documenti riservati'],c:1,e:'La conservazione (Linee Guida AgID sui documenti informatici) assicura il valore legale nel tempo tramite responsabile della conservazione, metadati e pacchetti di archiviazione.'},
+{t:'pa_dig',q:'La CIE (Carta d\'Identità Elettronica) può essere utilizzata per:',o:['Solo l\'identificazione fisica alle frontiere','L\'accesso ai servizi online della PA come strumento di identità digitale (anche di livello 3)','Esclusivamente la firma di contratti privati','Sostituire la tessera sanitaria'],c:1,e:'La CIE è documento di identità e strumento di identità digitale ("Entra con CIE"), con livelli di autenticazione fino al livello 3 tramite il chip NFC.'},
+// ---- SISTEMI OPERATIVI E CLOUD ----
+{t:'so_cloud',q:'La differenza tra processo e thread è:',o:['Non esiste differenza','Il processo ha uno spazio di indirizzamento proprio; i thread condividono lo spazio del processo cui appartengono','I thread non possono essere eseguiti in parallelo','Il processo è sempre più veloce del thread'],c:1,e:'Il processo è un\'istanza di programma con memoria propria; i thread sono flussi di esecuzione interni al processo che ne condividono memoria e risorse.'},
+{t:'so_cloud',q:'Il deadlock (stallo) tra processi si verifica quando:',o:['Un processo termina in modo anomalo','Due o più processi si bloccano a vicenda attendendo risorse detenute dagli altri','La CPU è al 100% di utilizzo','La memoria RAM è esaurita'],c:1,e:'Il deadlock richiede quattro condizioni simultanee: mutua esclusione, hold and wait, assenza di prelazione e attesa circolare. Si previene negandone almeno una.'},
+{t:'so_cloud',q:'La memoria virtuale consente di:',o:['Aumentare fisicamente la RAM installata','Eseguire processi con spazio di indirizzamento superiore alla RAM fisica, usando il disco come estensione','Eliminare la necessità del file system','Velocizzare la CPU'],c:1,e:'Con paginazione e swapping il SO offre a ogni processo uno spazio di indirizzamento virtuale, caricando in RAM solo le pagine necessarie.'},
+{t:'so_cloud',q:'Nel modello cloud IaaS (Infrastructure as a Service), il fornitore mette a disposizione:',o:['Applicazioni pronte all\'uso via web','Risorse infrastrutturali virtualizzate (server, storage, rete) gestite dal cliente a livello di SO e applicazioni','Solo l\'ambiente di sviluppo e runtime','Il supporto sistemistico on-site'],c:1,e:'IaaS: infrastruttura virtualizzata (es. VM). PaaS: piattaforma e runtime per sviluppare senza gestire i server. SaaS: applicazione completa fruita via rete (es. webmail).'},
+{t:'so_cloud',q:'Un cloud "ibrido" è:',o:['Un cloud gestito da due fornitori concorrenti','La combinazione di cloud privato e pubblico con orchestrazione e portabilità tra i due','Un data center senza virtualizzazione','Una rete peer-to-peer'],c:1,e:'Il cloud ibrido integra risorse private (on-premise o dedicate) e pubbliche, spostando i carichi in base a requisiti di sicurezza, costi e prestazioni.'},
+{t:'so_cloud',q:'La virtualizzazione tramite hypervisor consente di:',o:['Eseguire più macchine virtuali con SO anche diversi sullo stesso hardware fisico','Aumentare la frequenza della CPU','Eliminare i backup','Collegare più monitor allo stesso PC'],c:0,e:'L\'hypervisor (tipo 1 bare metal o tipo 2 hosted) astrae l\'hardware e consente più VM isolate sulla stessa macchina: base del cloud computing.'},
+{t:'so_cloud',q:'I container (es. Docker) si differenziano dalle macchine virtuali perché:',o:['Includono un intero sistema operativo guest','Condividono il kernel del sistema ospite, risultando più leggeri e rapidi da avviare','Non possono essere orchestrati','Richiedono hardware dedicato'],c:1,e:'I container virtualizzano a livello di SO condividendo il kernel: avvio in secondi e footprint ridotto. Kubernetes è lo standard di orchestrazione.'},
+{t:'so_cloud',q:'Lo scheduling "round robin" del sistema operativo:',o:['Esegue sempre per primo il processo più corto','Assegna la CPU a turno a ciascun processo per un quanto di tempo fisso','Dà priorità assoluta ai processi di sistema','Non consente la prelazione'],c:1,e:'Round robin: politica preemptive equa in cui ogni processo pronto riceve ciclicamente un time slice; bilancia i tempi di risposta nei sistemi time-sharing.'},
+// ---- DIRITTO AMMINISTRATIVO ----
+{t:'dir_amm',q:'La Legge 241/1990 disciplina:',o:['Il pubblico impiego','Il procedimento amministrativo e il diritto di accesso ai documenti','I contratti pubblici','L\'ordinamento degli enti locali'],c:1,e:'La L. 241/1990 fissa i principi dell\'azione amministrativa (economicità, efficacia, imparzialità, pubblicità, trasparenza), il responsabile del procedimento e l\'accesso documentale.'},
+{t:'dir_amm',q:'Salvo diverso termine di legge o regolamento, il procedimento amministrativo deve concludersi entro:',o:['15 giorni','30 giorni','60 giorni','90 giorni'],c:1,e:'Art. 2 L. 241/1990: termine generale di 30 giorni, salvo che leggi o regolamenti prevedano termini diversi (di norma fino a 90, max 180 giorni nei casi previsti).'},
+{t:'dir_amm',q:'Il responsabile del procedimento, ai sensi della L. 241/1990:',o:['È sempre il dirigente dell\'ufficio','È il soggetto cui è affidata la cura dell\'istruttoria e degli adempimenti procedimentali','È nominato dal giudice amministrativo','Coincide sempre con chi adotta il provvedimento finale'],c:1,e:'Artt. 4-6 L. 241/1990: l\'unità organizzativa responsabile è predeterminata; il responsabile cura istruttoria e comunicazioni e può non coincidere con l\'organo che adotta l\'atto.'},
+{t:'dir_amm',q:'Il silenzio assenso (art. 20, L. 241/1990) comporta che:',o:['Il silenzio della PA equivale sempre a rigetto','Nei casi previsti, decorso il termine senza provvedimento, l\'istanza si intende accolta','L\'istante deve rinnovare la domanda','La PA è esonerata dal provvedere'],c:1,e:'Nei procedimenti a istanza di parte, salve le esclusioni (ambiente, salute, patrimonio culturale, ecc.), il decorso del termine senza diniego equivale ad accoglimento.'},
+{t:'dir_amm',q:'L\'accesso civico "generalizzato" (FOIA), introdotto dal D.Lgs. 97/2016 nel D.Lgs. 33/2013, consente:',o:['Solo l\'accesso ai documenti che riguardano direttamente il richiedente','A chiunque di accedere a dati e documenti della PA ulteriori rispetto a quelli a pubblicazione obbligatoria, senza obbligo di motivazione','L\'accesso ai soli atti pubblicati sul sito','L\'accesso esclusivamente agli atti di gara'],c:1,e:'Art. 5, c.2, D.Lgs. 33/2013: chiunque, senza motivazione, può accedere a dati/documenti detenuti dalla PA, nei limiti degli interessi pubblici e privati indicati dall\'art. 5-bis. Diverso dall\'accesso documentale ex L. 241/1990, che richiede interesse qualificato.'},
+{t:'dir_amm',q:'Il Piano triennale di prevenzione della corruzione e della trasparenza (PTPCT), previsto dalla L. 190/2012:',o:['È adottato dall\'ANAC per tutte le PA','È adottato da ciascuna amministrazione su proposta del RPCT (oggi confluisce nel PIAO)','È facoltativo per i ministeri','Riguarda solo gli enti locali'],c:1,e:'Ogni PA adotta il piano anticorruzione su proposta del Responsabile della prevenzione della corruzione e della trasparenza; per molte amministrazioni è ora sezione del PIAO. L\'ANAC vigila e adotta il Piano Nazionale Anticorruzione.'},
+{t:'dir_amm',q:'I provvedimenti amministrativi devono essere motivati (art. 3, L. 241/1990):',o:['Solo se sfavorevoli al destinatario','Con l\'indicazione dei presupposti di fatto e delle ragioni giuridiche della decisione, salvo gli atti normativi e a contenuto generale','Solo su richiesta dell\'interessato','Solo in caso di ricorso'],c:1,e:'La motivazione è obbligo generale: presupposti di fatto e ragioni giuridiche in relazione alle risultanze dell\'istruttoria. Esclusi atti normativi e a contenuto generale.'},
+{t:'dir_amm',q:'L\'annullabilità del provvedimento amministrativo (art. 21-octies, L. 241/1990) ricorre in caso di:',o:['Difetto assoluto di attribuzione','Violazione di legge, eccesso di potere o incompetenza','Nullità del contratto','Mancata pubblicazione sul sito'],c:1,e:'I vizi di legittimità sono violazione di legge, eccesso di potere e incompetenza (relativa). La nullità (21-septies) ricorre per difetto assoluto di attribuzione, mancanza di elementi essenziali, violazione o elusione del giudicato.'},
+{t:'dir_amm',q:'Il Codice dei contratti pubblici vigente è il:',o:['D.Lgs. 50/2016','D.Lgs. 36/2023','D.Lgs. 163/2006','DPR 207/2010'],c:1,e:'Il D.Lgs. 36/2023 è il nuovo Codice dei contratti pubblici (in vigore dal 2023), improntato ai principi del risultato e della fiducia, con digitalizzazione del ciclo di vita dei contratti.'},
+{t:'dir_amm',q:'La SCIA (Segnalazione Certificata di Inizio Attività) consente di:',o:['Ottenere un\'autorizzazione espressa in 90 giorni','Iniziare l\'attività dalla data di presentazione della segnalazione, salvi i controlli successivi della PA','Sospendere un procedimento in corso','Sostituire il silenzio assenso in ogni caso'],c:1,e:'Art. 19 L. 241/1990: la SCIA sostituisce autorizzazioni vincolate; l\'attività inizia subito e la PA ha 60 giorni (30 in edilizia) per i controlli e gli eventuali divieti di prosecuzione.'},
+// ---- PENALE E COSTITUZIONE ----
+{t:'dir_pen',q:'Il delitto di peculato (art. 314 c.p.) è commesso dal pubblico ufficiale che:',o:['Riceve denaro per compiere un atto contrario ai doveri d\'ufficio','Si appropria di denaro o cosa mobile altrui di cui ha il possesso per ragione del suo ufficio','Costringe taluno a dare denaro abusando della sua qualità','Rifiuta un atto d\'ufficio urgente'],c:1,e:'Peculato: appropriazione di denaro/cosa mobile posseduta per ragioni d\'ufficio. La costrizione a dare è concussione (317); il denaro per atto contrario ai doveri è corruzione propria (319).'},
+{t:'dir_pen',q:'La concussione (art. 317 c.p.) si distingue dalla corruzione perché:',o:['È commessa solo da privati','Il pubblico ufficiale, abusando della sua qualità o dei suoi poteri, costringe taluno a dare o promettere utilità','Richiede un accordo paritario tra le parti','Riguarda solo somme superiori a una soglia'],c:1,e:'Nella concussione c\'è costrizione della vittima da parte del pubblico agente; nella corruzione c\'è un accordo (pactum sceleris) tra corrotto e corruttore, entrambi punibili.'},
+{t:'dir_pen',q:'Il reato di abuso d\'ufficio (art. 323 c.p.):',o:['È stato inasprito nel 2024','È stato abrogato dalla legge 114/2024','Si applica solo ai dirigenti','È perseguibile solo a querela'],c:1,e:'La L. 114/2024 ha abrogato l\'abuso d\'ufficio e ridefinito il traffico di influenze illecite (art. 346-bis c.p.): novità rilevante e frequente nei quiz aggiornati.'},
+{t:'dir_pen',q:'L\'art. 97 della Costituzione stabilisce che i pubblici uffici sono organizzati secondo:',o:['Criteri di segretezza e gerarchia','Disposizioni di legge, in modo che siano assicurati il buon andamento e l\'imparzialità dell\'amministrazione','Autonomia contrattuale piena','Direttive del Governo senza riserva di legge'],c:1,e:'Art. 97 Cost.: riserva di legge sull\'organizzazione, principi di buon andamento e imparzialità; agli impieghi si accede mediante concorso, salvo i casi stabiliti dalla legge.'},
+{t:'dir_pen',q:'Ai sensi dell\'art. 54 della Costituzione, i cittadini cui sono affidate funzioni pubbliche hanno il dovere di:',o:['Iscriversi a un albo professionale','Adempierle con disciplina e onore, prestando giuramento nei casi stabiliti dalla legge','Risiedere nel comune di servizio','Aderire al codice etico europeo'],c:1,e:'Art. 54, c.2, Cost.: adempimento con disciplina e onore — fondamento costituzionale dei codici di comportamento dei dipendenti pubblici.'},
+{t:'dir_pen',q:'Il rifiuto di atti d\'ufficio (art. 328 c.p.) punisce il pubblico ufficiale che:',o:['Ritarda qualsiasi pratica amministrativa','Indebitamente rifiuta un atto del suo ufficio che deve essere compiuto senza ritardo per ragioni di giustizia, sicurezza, ordine pubblico, igiene e sanità','Esprime opinioni critiche verso l\'amministrazione','Si assenta dal servizio senza giustificazione'],c:1,e:'Il 328 c.p. tutela il tempestivo compimento degli atti urgenti qualificati; il comma 2 punisce la mancata risposta entro 30 giorni alla diffida di chi vi ha interesse.'},
+// ---- PUBBLICO IMPIEGO ----
+{t:'pubbl_imp',q:'Il Testo Unico del Pubblico Impiego (TUPI) è il:',o:['D.Lgs. 82/2005','D.Lgs. 165/2001','DPR 62/2013','D.Lgs. 75/2017'],c:1,e:'Il D.Lgs. 165/2001 reca le norme generali sull\'ordinamento del lavoro alle dipendenze delle amministrazioni pubbliche (privatizzazione del rapporto, dirigenza, contrattazione).'},
+{t:'pubbl_imp',q:'Il codice di comportamento dei dipendenti pubblici è contenuto nel:',o:['DPR 62/2013','D.Lgs. 33/2013','L. 190/2012','D.Lgs. 150/2009'],c:0,e:'Il DPR 62/2013 (aggiornato dal DPR 81/2023, che include l\'uso dei social e delle tecnologie) attua l\'art. 54 del D.Lgs. 165/2001; ogni PA adotta un proprio codice integrativo.'},
+{t:'pubbl_imp',q:'Secondo il codice di comportamento, il dipendente pubblico può accettare regali:',o:['Di qualsiasi valore se dichiarati','Solo d\'uso, di modico valore (orientativamente non superiore a 150 euro) e nei limiti delle normali relazioni di cortesia','Solo in denaro contante','Mai, in nessun caso'],c:1,e:'Art. 4 DPR 62/2013: vietati regali salvo quelli d\'uso di modico valore (max 150 euro come regola generale, riducibile dai codici di amministrazione); mai come corrispettivo per atti dell\'ufficio.'},
+{t:'pubbl_imp',q:'Nel pubblico impiego privatizzato, le controversie di lavoro dei dipendenti (non dirigenti in regime pubblicistico) sono devolute:',o:['Al TAR','Al giudice ordinario in funzione di giudice del lavoro','Alla Corte dei conti','Al Consiglio di Stato'],c:1,e:'Art. 63 D.Lgs. 165/2001: giurisdizione del giudice ordinario per i rapporti privatizzati; restano al giudice amministrativo le procedure concorsuali e le categorie in regime di diritto pubblico.'},
+{t:'pubbl_imp',q:'La responsabilità del dipendente pubblico per danno erariale è accertata:',o:['Dal giudice penale','Dalla Corte dei conti','Dall\'ANAC','Dal dirigente dell\'ufficio'],c:1,e:'Il danno all\'erario causato con dolo o colpa grave è giudicato dalla Corte dei conti. Le responsabilità del dipendente sono: penale, civile, amministrativo-contabile, disciplinare e dirigenziale.'},
+{t:'pubbl_imp',q:'Le sanzioni disciplinari più gravi del rimprovero verbale sono irrogate:',o:['Direttamente dal collega più anziano','Dall\'Ufficio per i procedimenti disciplinari (UPD) secondo il procedimento dell\'art. 55-bis D.Lgs. 165/2001','Dal Ministro competente','Dal giudice del lavoro'],c:1,e:'Il rimprovero verbale spetta al responsabile della struttura; per le altre sanzioni procede l\'UPD con contestazione scritta, diritto di difesa e termini perentori.'},
+{t:'pubbl_imp',q:'L\'accesso ai pubblici impieghi avviene, di regola:',o:['Per chiamata diretta','Mediante concorso pubblico (art. 97 Cost. e art. 35 D.Lgs. 165/2001)','Per anzianità di iscrizione al collocamento','Su designazione sindacale'],c:1,e:'Il concorso pubblico è la regola costituzionale, con procedure che garantiscono imparzialità, trasparenza e pari opportunità; deroghe solo nei casi previsti dalla legge.'},
+{t:'pubbl_imp',q:'Il whistleblowing nella PA (D.Lgs. 24/2023) tutela:',o:['Il dipendente che segnala violazioni di cui è venuto a conoscenza nel contesto lavorativo, vietando ritorsioni','Solo i dirigenti che denunciano i sottoposti','Le segnalazioni anonime in ogni caso e senza condizioni','I fornitori esclusi dalle gare'],c:0,e:'Il D.Lgs. 24/2023 (attuativo della direttiva UE 2019/1937) protegge i segnalanti da ritorsioni, con canali interni riservati, canale esterno ANAC e possibilità di divulgazione pubblica a condizioni definite.'},
+// ---- INGLESE B1 ----
+{t:'inglese',q:'Choose the correct sentence:',o:['She don\'t work in the IT department.','She doesn\'t works in the IT department.','She doesn\'t work in the IT department.','She not work in the IT department.'],c:2,e:'Present simple negativo, terza persona: doesn\'t + forma base del verbo ("work", senza -s).'},
+{t:'inglese',q:'"If the server crashes, we ___ the backup system."',o:['will activate','would activated','activated','have activate'],c:0,e:'First conditional: if + present simple, will + forma base. Ipotesi reale/probabile nel futuro.'},
+{t:'inglese',q:'Choose the correct option: "The report must ___ by Friday."',o:['submit','be submitted','submitted','to submit'],c:1,e:'Passivo con modale: must + be + participio passato ("be submitted"): il report deve essere consegnato.'},
+{t:'inglese',q:'"I have worked here ___ 2019."',o:['for','since','from','during'],c:1,e:'Present perfect: "since" + punto di inizio (2019); "for" + durata (es. for five years).'},
+{t:'inglese',q:'What does "to troubleshoot" mean?',o:['To create new software','To identify and solve problems in a system','To shut down a computer','To write documentation'],c:1,e:'"Troubleshoot" = diagnosticare e risolvere problemi/guasti, termine comune nel supporto IT.'},
+{t:'inglese',q:'Choose the correct comparative: "This new procedure is ___ than the old one."',o:['more efficient','most efficient','efficienter','the more efficient'],c:0,e:'Comparativo di maggioranza con aggettivi lunghi: more + aggettivo + than.'},
+{t:'inglese',q:'"Could you tell me where ___?"',o:['is the meeting room','the meeting room is','is meeting room','does the meeting room is'],c:1,e:'Nelle domande indirette l\'ordine è affermativo: where + soggetto + verbo ("where the meeting room is").'},
+{t:'inglese',q:'The password ___ every three months.',o:['should be changed','should changed','should to change','should be change'],c:0,e:'Modale + passivo: should be + participio passato ("changed").'},
+// ---- LOGICA ----
+{t:'logica',q:'Completare la serie numerica: 3, 6, 12, 24, ...',o:['36','48','30','42'],c:1,e:'Ogni termine è il doppio del precedente: 24 × 2 = 48.'},
+{t:'logica',q:'Completare la serie: 2, 3, 5, 8, 13, ...',o:['18','20','21','24'],c:2,e:'Le differenze crescono come 1, 2, 3, 5 (somma dei due termini precedenti, tipo Fibonacci): 13 + 8 = 21.'},
+{t:'logica',q:'Se tutti i funzionari sono laureati e Marco è un funzionario, allora:',o:['Marco potrebbe non essere laureato','Marco è laureato','Tutti i laureati sono funzionari','Marco è dirigente'],c:1,e:'Sillogismo valido: dalla premessa universale (tutti i funzionari sono laureati) e da quella particolare (Marco è funzionario) segue necessariamente che Marco è laureato.'},
+{t:'logica',q:'"Non è vero che tutti i file sono stati corrotti" equivale a:',o:['Nessun file è stato corrotto','Tutti i file sono integri','Almeno un file non è stato corrotto','Almeno un file è stato corrotto'],c:2,e:'La negazione di "tutti" è "almeno uno non": esiste almeno un file non corrotto (non implica che tutti siano integri).'},
+{t:'logica',q:'Se 4 tecnici completano una migrazione in 12 giorni, 6 tecnici (a parità di produttività) la completano in:',o:['10 giorni','8 giorni','9 giorni','6 giorni'],c:1,e:'Proporzionalità inversa: 4 × 12 = 48 giornate-uomo; 48 ÷ 6 = 8 giorni.'},
+{t:'logica',q:'Completare la serie di lettere: B, D, G, K, ...',o:['N','O','P','M'],c:2,e:'Gli intervalli crescono: +2 (B→D), +3 (D→G), +4 (G→K), +5 (K→P).'},
+{t:'logica',q:'Se A > B e B > C, quale affermazione è necessariamente vera?',o:['C > A','A > C','A = C','B > A'],c:1,e:'La relazione "maggiore di" è transitiva: da A > B e B > C segue A > C.'},
+{t:'logica',q:'Individuare l\'intruso: server, router, firewall, contratto, switch',o:['server','contratto','firewall','switch'],c:1,e:'"Contratto" è un documento giuridico; gli altri sono apparati/componenti di una infrastruttura di rete.'},
+{t:'logica',q:'Un progetto è in ritardo del 25% rispetto ai 40 giorni pianificati. Quanti giorni durerà in totale?',o:['45','50','48','55'],c:1,e:'25% di 40 = 10 giorni di ritardo: 40 + 10 = 50 giorni.'},
+{t:'logica',q:'"Solo se il collaudo è superato, il sistema va in produzione." Il sistema è in produzione. Quindi:',o:['Il collaudo è stato superato','Il collaudo non è stato superato','Il sistema è in test','Non si può concludere nulla'],c:0,e:'"Solo se X, allora Y" significa che X è condizione necessaria di Y: se Y è vero (produzione), X deve essere vero (collaudo superato).'},
+];
+// ---- SITUAZIONALI (scoring: più efficace 0.75, neutra 0.375, meno efficace 0) ----
+const SITU=[
+{q:'Stai lavorando a una scadenza urgente quando un collega di un altro ufficio ti chiede aiuto per un problema tecnico non bloccante. Cosa fai?',o:['Interrompi subito il tuo lavoro per aiutarlo, rimandando la scadenza','Gli spieghi che sei su una scadenza urgente e concordi un momento successivo per aiutarlo','Gli dici di arrangiarsi e cercare su internet'],s:[0.375,0.75,0],e:'La risposta più efficace bilancia collaborazione e responsabilità sulle priorità: si dà disponibilità concordando tempi compatibili. Interrompere la scadenza è generoso ma poco responsabile (neutra); rifiutare bruscamente è la meno efficace.'},
+{q:'Durante una riunione, il tuo dirigente presenta dati che sai essere errati a causa di un aggiornamento del database che solo tu conosci. Cosa fai?',o:['Non dici nulla per non metterlo in imbarazzo','Lo correggi pubblicamente davanti a tutti in tono critico','Segnali con discrezione il dato aggiornato, offrendoti di verificare insieme dopo la riunione'],s:[0,0.375,0.75],e:'La più efficace tutela la correttezza delle informazioni e la relazione professionale. Tacere fa circolare dati errati (meno efficace); la correzione pubblica in tono critico è meno costruttiva (neutra, dipende dal modo).'},
+{q:'Ti accorgi di aver commesso un errore in una configurazione che potrebbe causare disservizi nei prossimi giorni. Nessuno se n\'è accorto. Cosa fai?',o:['Attendi di vedere se il problema si manifesta davvero','Segnali subito l\'errore al responsabile e proponi un piano di correzione','Correggi di nascosto sperando che nessuno se ne accorga'],s:[0,0.75,0.375],e:'Trasparenza e proattività: segnalare subito con una proposta di rimedio è il comportamento atteso (integrità). Correggere di nascosto risolve il problema ma mina la fiducia e la tracciabilità; attendere è la scelta peggiore.'},
+{q:'Un cittadino ti contatta esasperato perché non riesce ad accedere a un servizio online e usa toni molto accesi. Cosa fai?',o:['Rispondi con lo stesso tono per farti rispettare','Mantieni la calma, ascolti il problema e lo guidi passo passo verso la soluzione o l\'ufficio competente','Gli dici che non è di tua competenza e chiudi la conversazione'],s:[0,0.75,0.375],e:'Orientamento all\'utenza: ascolto, tono professionale e presa in carico (anche solo indirizzando correttamente). Scaricare senza orientare è neutro-negativo; rispondere in modo aggressivo è la meno efficace.'},
+{q:'Il tuo responsabile ti assegna contemporaneamente due attività urgenti che non puoi completare entrambe in giornata. Cosa fai?',o:['Scegli tu quale fare senza dire nulla','Chiedi al responsabile di definire insieme le priorità, prospettando tempi realistici per entrambe','Lavori fino a tardi cercando di farle entrambe, a qualunque costo'],s:[0.375,0.75,0],e:'Comunicazione e pianificazione: rendere esplicito il conflitto di priorità e concordare la sequenza è la condotta più efficace. Decidere in silenzio è rischioso (neutra); sacrificare qualità e sostenibilità è la meno efficace.'},
+{q:'Un collega ti chiede informalmente dati personali contenuti in una banca dati cui hai accesso, per una "verifica veloce" non legata a un procedimento. Cosa fai?',o:['Glieli fornisci: è un collega e ti fidi','Rifiuti e gli ricordi che l\'accesso ai dati è consentito solo per finalità istituzionali e con autorizzazione','Gli suggerisci di chiederli a qualcun altro'],s:[0,0.75,0.375],e:'Protezione dei dati e integrità: gli accessi sono legittimi solo per finalità istituzionali (principio di minimizzazione, DPR 62/2013 e GDPR). Fornirli è violazione; deviare la richiesta non risolve il problema.'},
+{q:'Entri in un nuovo gruppo di lavoro dove esistono tensioni tra due colleghi che rallentano il progetto. Cosa fai?',o:['Ti schieri con il collega che ti sembra più simpatico','Resti neutrale, favorisci il confronto sui fatti e riporti la discussione sugli obiettivi comuni del progetto','Ignori la situazione: non è compito tuo'],s:[0,0.75,0.375],e:'Lavoro di squadra: mantenere neutralità e ricentrare sui fatti e sugli obiettivi è la condotta più efficace. Ignorare lascia degradare il clima; schierarsi alimenta il conflitto.'},
+{q:'Ricevi in ufficio una richiesta di lavorazione con procedura che ritieni obsoleta e inefficiente. Cosa fai?',o:['La esegui come sempre: si è sempre fatto così','La esegui garantendo la continuità del servizio e, in parallelo, proponi al responsabile una soluzione migliorativa documentata','Ti rifiuti di eseguirla finché la procedura non viene cambiata'],s:[0.375,0.75,0],e:'Proattività e orientamento al risultato: garantire il servizio e proporre il miglioramento con dati. Il rifiuto blocca l\'attività (meno efficace); l\'esecuzione passiva è neutra.'},
+];
+// ---- FLASHCARD (cloze atomiche) ----
+const CARDS=[
+{t:'pa_dig',f:'Il CAD è il D.Lgs. {…} del {…}',b:'D.Lgs. 82 del 2005 — Codice dell\'Amministrazione Digitale'},
+{t:'pa_dig',f:'eIDAS = Regolamento UE {…}/{…}',b:'910/2014 (aggiornato da eIDAS 2.0, Reg. UE 2024/1183: EU Digital Identity Wallet)'},
+{t:'pa_dig',f:'SPID ha {…} livelli di sicurezza',b:'3 livelli (L1 password, L2 +OTP, L3 dispositivi/certificati)'},
+{t:'pa_dig',f:'La PDND è prevista dall\'art. {…} del CAD',b:'Art. 50-ter — Piattaforma Digitale Nazionale Dati (interoperabilità via API, principio once-only)'},
+{t:'pa_dig',f:'La PEC equivale legalmente alla {…}',b:'Raccomandata con ricevuta di ritorno (A/R)'},
+{t:'pa_dig',f:'Il Piano Triennale per l\'informatica nella PA è predisposto da {…}',b:'AgID — Agenzia per l\'Italia Digitale (edizione 2024-2026, principi cloud-first e API-first)'},
+{t:'pa_dig',f:'La qualificazione dei servizi cloud per la PA è oggi in capo a {…}',b:'ACN — Agenzia per la Cybersicurezza Nazionale (Regolamento Cloud ACN, che ha sostituito la disciplina AgID)'},
+{t:'pa_dig',f:'L\'accessibilità degli strumenti informatici è disciplinata dalla Legge {…}/{…}',b:'Legge 4/2004 (Legge Stanca), con Linee Guida AgID e WCAG (EN 301 549)'},
+{t:'pa_dig',f:'Il protocollo informatico è disciplinato dal DPR {…}/{…}',b:'DPR 445/2000 — nucleo minimo: registrazione, segnatura, classificazione'},
+{t:'pa_dig',f:'Registro dei domicili digitali delle persone fisiche: {…}; di imprese e professionisti: {…}',b:'INAD (persone fisiche) e INI-PEC (imprese e professionisti)'},
+{t:'pa_dig',f:'Il PSN (Polo Strategico Nazionale) ospita {…}',b:'Dati e servizi strategici e critici della PA nel cloud nazionale qualificato'},
+{t:'pa_dig',f:'La firma digitale è una firma elettronica {…} basata su crittografia {…}',b:'Qualificata, basata su crittografia a chiavi asimmetriche e certificato qualificato (art. 20 CAD)'},
+{t:'sicurezza',f:'Triade CIA = {…}, {…}, {…}',b:'Confidentiality (riservatezza), Integrity (integrità), Availability (disponibilità)'},
+{t:'sicurezza',f:'GDPR = Regolamento UE {…}/{…}',b:'2016/679 — protezione dei dati personali'},
+{t:'sicurezza',f:'Notifica data breach al Garante: entro {…} ore ove possibile',b:'72 ore, senza ingiustificato ritardo (art. 33 GDPR)'},
+{t:'sicurezza',f:'Il DPO è sempre obbligatorio per {…}',b:'Autorità e organismi pubblici (art. 37 GDPR)'},
+{t:'sicurezza',f:'NIS 2 = Direttiva UE {…}, recepita con D.Lgs. {…}/{…}',b:'Direttiva UE 2022/2555, recepita con D.Lgs. 138/2024 — autorità: ACN'},
+{t:'sicurezza',f:'Prevenzione della SQL injection: {…}',b:'Prepared statement / query parametrizzate + validazione degli input'},
+{t:'sicurezza',f:'Crittografia asimmetrica: chiave {…} per cifrare/verificare, chiave {…} per decifrare/firmare',b:'Pubblica per cifrare o verificare; privata per decifrare o firmare'},
+{t:'sicurezza',f:'MFA = almeno due fattori tra {…}',b:'Conoscenza (password), possesso (token/telefono), inerenza (biometria)'},
+{t:'reti',f:'HTTPS porta {…}, HTTP porta {…}, SSH porta {…}',b:'443, 80, 22'},
+{t:'reti',f:'DNS traduce {…} in {…}',b:'Nomi di dominio in indirizzi IP (porta 53)'},
+{t:'reti',f:'Modello OSI: {…} livelli; TCP/IP: {…} livelli',b:'OSI 7 livelli; TCP/IP 4 livelli'},
+{t:'reti',f:'TCP è {…}; UDP è {…}',b:'TCP orientato alla connessione e affidabile; UDP senza connessione e senza garanzie'},
+{t:'reti',f:'Rete /24 → {…} host utilizzabili',b:'254 host (256 − rete − broadcast)'},
+{t:'reti',f:'IPv4 = {…} bit; IPv6 = {…} bit',b:'32 bit; 128 bit'},
+{t:'db',f:'ACID = {…}',b:'Atomicità, Coerenza (Consistency), Isolamento, Durabilità'},
+{t:'db',f:'Condizioni su funzioni aggregate: clausola {…} (non WHERE)',b:'HAVING, dopo GROUP BY'},
+{t:'db',f:'3NF: nessuna dipendenza {…} degli attributi non chiave',b:'Transitiva dalla chiave (oltre ai requisiti di 1NF e 2NF)'},
+{t:'db',f:'Relazione N:M si implementa con {…}',b:'Una tabella associativa (ponte) con le chiavi esterne delle due entità'},
+{t:'db',f:'DDL = {…}; DML = {…}; DCL = {…}',b:'CREATE/ALTER/DROP; SELECT/INSERT/UPDATE/DELETE; GRANT/REVOKE'},
+{t:'sweng',f:'Test black box verifica {…}; white box verifica {…}',b:'Black box: comportamento vs specifiche; white box: struttura interna del codice'},
+{t:'sweng',f:'Test di regressione = {…}',b:'Verificare che le modifiche non abbiano rotto funzionalità preesistenti'},
+{t:'sweng',f:'REST usa i metodi HTTP {…}',b:'GET, POST, PUT, PATCH, DELETE su risorse identificate da URI (stateless)'},
+{t:'sweng',f:'Refactoring = migliorare {…} senza cambiare {…}',b:'La struttura interna del codice, senza cambiare il comportamento esterno'},
+{t:'pm',f:'ITIL: incident = {…}; problem = {…}',b:'Incident: interruzione/degrado del servizio; problem: causa sottostante di uno o più incident'},
+{t:'pm',f:'Scrum: i tre ruoli sono {…}',b:'Product Owner (valore/backlog), Scrum Master (processo), Developers (team auto-organizzato)'},
+{t:'pm',f:'Daily Scrum: durata massima {…} minuti',b:'15 minuti, in piedi, ogni giorno alla stessa ora'},
+{t:'pm',f:'SLA = {…}',b:'Service Level Agreement: livelli di servizio garantiti, misurabili, con eventuali penali'},
+{t:'pm',f:'Metodologie citate nel bando INF: {…}',b:'PMI, COBIT, PRINCE2, IPMA, ITIL, CMMI + Agile (Scrum, XP, Lean)'},
+{t:'so_cloud',f:'IaaS = {…}; PaaS = {…}; SaaS = {…}',b:'Infrastruttura virtualizzata; piattaforma/runtime; software applicativo completo'},
+{t:'so_cloud',f:'Deadlock: le 4 condizioni sono {…}',b:'Mutua esclusione, hold and wait, no prelazione, attesa circolare'},
+{t:'so_cloud',f:'Container vs VM: i container condividono {…}',b:'Il kernel del sistema ospite (più leggeri; orchestrazione con Kubernetes)'},
+{t:'dir_amm',f:'Procedimento amministrativo: Legge {…}/{…}; termine generale {…} giorni',b:'L. 241/1990; 30 giorni (art. 2)'},
+{t:'dir_amm',f:'Accesso civico generalizzato (FOIA): art. 5, c.2, D.Lgs. {…}/{…}',b:'D.Lgs. 33/2013 (come modificato dal D.Lgs. 97/2016): chiunque, senza motivazione'},
+{t:'dir_amm',f:'Anticorruzione: Legge {…}/{…}; autorità: {…}',b:'L. 190/2012; ANAC (piano di amministrazione: PTPCT, oggi nel PIAO)'},
+{t:'dir_amm',f:'Vizi di legittimità del provvedimento: {…}',b:'Violazione di legge, eccesso di potere, incompetenza (art. 21-octies L. 241/1990)'},
+{t:'dir_amm',f:'Codice dei contratti pubblici vigente: D.Lgs. {…}/{…}',b:'D.Lgs. 36/2023 — principi del risultato e della fiducia, digitalizzazione dei contratti'},
+{t:'dir_amm',f:'SCIA: art. {…} della L. 241/1990; controlli entro {…} giorni',b:'Art. 19; 60 giorni (30 in edilizia)'},
+{t:'dir_pen',f:'Peculato art. {…} c.p.; concussione art. {…}; corruzione propria art. {…}',b:'314; 317; 319 c.p.'},
+{t:'dir_pen',f:'L\'abuso d\'ufficio (art. 323 c.p.) è stato {…} dalla L. {…}/2024',b:'Abrogato dalla L. 114/2024'},
+{t:'dir_pen',f:'Art. 97 Cost.: principi di {…} e {…}',b:'Buon andamento e imparzialità (accesso per concorso)'},
+{t:'pubbl_imp',f:'TUPI = D.Lgs. {…}/{…}',b:'D.Lgs. 165/2001 — norme generali sul lavoro alle dipendenze delle PA'},
+{t:'pubbl_imp',f:'Codice di comportamento: DPR {…}/{…}; regali di modico valore max {…} euro',b:'DPR 62/2013 (agg. DPR 81/2023); 150 euro orientativi'},
+{t:'pubbl_imp',f:'Danno erariale: giudica la {…}',b:'Corte dei conti (dolo o colpa grave)'},
+{t:'pubbl_imp',f:'Whistleblowing: D.Lgs. {…}/2023; canale esterno: {…}',b:'D.Lgs. 24/2023; ANAC'},
+{t:'inglese',f:'First conditional: If + {…}, {…} + base form',b:'If + present simple, will + forma base (If the server crashes, we will activate...)'},
+{t:'inglese',f:'Passivo con modale: must {…} submitted',b:'must BE submitted (modale + be + participio passato)'},
+];
+// ============ PIANO 7 GIORNI (2h/g; 5h giorni 3-4) ============
+const PLAN=[
+{d:1,h:'2 ore',title:'Diagnosi + fondamenta tecniche',tasks:[
+ ['Simulazione diagnostica completa (40 quesiti / 60 min) nella scheda Simulazione',60],
+ ['Analisi del risultato per materia (scheda Statistiche): individua le 3 materie più deboli',15],
+ ['Flashcard: Reti e protocolli + Sistemi operativi e Cloud (tutte le carte nuove)',30],
+ ['Quiz mirato: Reti e protocolli con feedback immediato',15]]},
+{d:2,h:'2 ore',title:'Sicurezza, GDPR e basi di dati',tasks:[
+ ['Quiz mirato: Sicurezza e GDPR (leggi ogni spiegazione)',30],
+ ['Quiz mirato: Basi di dati e SQL',30],
+ ['Flashcard: Sicurezza + Basi di dati',30],
+ ['Quiz errori: ripeti tutti i quesiti sbagliati finora',30]]},
+{d:3,h:'5 ore',title:'Blocco intensivo tecnico + Mock #1',tasks:[
+ ['Quiz mirato: Ingegneria del software',35],
+ ['Quiz mirato: Project management e Agile',35],
+ ['Flashcard: Ingegneria del software + Project management',30],
+ ['Ripasso spaziato: tutte le flashcard in scadenza',30],
+ ['SIMULAZIONE COMPLETA #1 cronometrata (40 quesiti / 60 min)',60],
+ ['Correzione approfondita: rileggi ogni errore e la spiegazione',45],
+ ['Quiz errori: re-test immediato dei quesiti sbagliati nel mock',35],
+ ['Flashcard nuove: CAD e digitalizzazione PA (prima metà)',30]]},
+{d:4,h:'5 ore',title:'Digitalizzazione PA + diritto + Mock #2',tasks:[
+ ['Quiz mirato: CAD e digitalizzazione PA',40],
+ ['Flashcard: CAD e digitalizzazione PA (seconda metà)',20],
+ ['Quiz mirato: Diritto amministrativo',35],
+ ['Quiz mirato: Pubblico impiego + Penale e Costituzione',35],
+ ['Flashcard: Diritto amministrativo + Pubblico impiego + Penale',30],
+ ['SIMULAZIONE COMPLETA #2 cronometrata (40 quesiti / 60 min)',60],
+ ['Correzione approfondita + quiz errori cumulativo',50],
+ ['Ripasso spaziato serale: flashcard in scadenza',30]]},
+{d:5,h:'2 ore',title:'Inglese + consolidamento spaziato',tasks:[
+ ['Quiz mirato: Inglese B1',25],
+ ['Ripasso spaziato: tutte le flashcard in scadenza (priorità alle difficili)',40],
+ ['Quiz errori: re-test di tutti gli errori dei giorni 3-4',40],
+ ['Quiz mirato sulla materia più debole (vedi Statistiche)',15]]},
+{d:6,h:'2 ore',title:'Situazionali + logica',tasks:[
+ ['Quiz mirato: Situazionali (impara la logica del punteggio 0,75/0,375/0)',35],
+ ['Quiz mirato: Logica',30],
+ ['Ripasso spaziato: flashcard in scadenza',25],
+ ['Quiz errori: registro errori residuo',30]]},
+{d:7,h:'2 ore',title:'Rifinitura e strategia d\'esame',tasks:[
+ ['SIMULAZIONE FINALE (40 quesiti / 60 min): obiettivo ≥ 24/30',60],
+ ['Correzione rapida + ultimo quiz errori',30],
+ ['Ripasso flashcard: solo le carte ancora nel livello basso',20],
+ ['Ripassa la strategia: rispondi solo se elimini almeno 1 opzione (penalità −0,25); sui situazionali rispondi SEMPRE; ~1 min 30 s a quesito',10]]},
+];
+// ============ STATO ============
+const KEY='ripam_inf_v1';
+let S;
+try{S=JSON.parse(localStorage.getItem(KEY))||{}}catch(e){S={}}
+S.tasks=S.tasks||{}; S.hist=S.hist||{}; S.errors=S.errors||{}; S.srs=S.srs||{}; S.mocks=S.mocks||[]; S.startDate=S.startDate||new Date().toISOString().slice(0,10);
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function todayIdx(){const ms=Date.now()-new Date(S.startDate+'T00:00:00').getTime();return Math.min(7,Math.max(1,Math.floor(ms/864e5)+1))}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+function rec(qid,ok,topic){S.hist[qid]=S.hist[qid]||{a:0,c:0,t:topic};S.hist[qid].a++;if(ok){S.hist[qid].c++;if(S.errors[qid]){S.errors[qid].okStreak=(S.errors[qid].okStreak||0)+1;if(S.errors[qid].okStreak>=2)delete S.errors[qid]}}else{S.errors[qid]={t:topic,okStreak:0}}save();paintHeader()}
+BANK.forEach((q,i)=>q.id='q'+i); SITU.forEach((q,i)=>q.id='s'+i); CARDS.forEach((c,i)=>c.id='c'+i);
+
+// ============ HEADER ============
+function paintHeader(){const m=S.mocks[S.mocks.length-1];const f=document.getElementById('hFill'),v=document.getElementById('hVal');
+ if(m){f.style.width=Math.max(0,Math.min(100,m.score/30*100))+'%';v.textContent=m.score.toFixed(2).replace('.',',')+' / 30';v.style.color=m.score>=21?'#8FD3A9':'#FFB3B3'}
+ else{f.style.width='0%';v.textContent='— / 30'}}
+
+// ============ ROUTER ============
+const TABS=[['piano','Piano 7 giorni'],['quiz','Quiz'],['mock','Simulazione'],['flash','Flashcard'],['errori','Errori'],['stats','Statistiche']];
+let cur='piano', mockState=null, quizState=null, flashState=null;
+function paintTabs(){document.getElementById('tabbar').innerHTML=TABS.map(([id,l])=>{
+ const nerr=id==='errori'?Object.keys(S.errors).length:0;
+ return `<button class="tab" role="tab" aria-selected="${cur===id}" onclick="go('${id}')">${l}${nerr?`<span class="badge">${nerr}</span>`:''}</button>`}).join('')}
+function go(t){if(mockState&&mockState.running&&t!=='mock'&&!confirm('Simulazione in corso: uscendo verrà annullata. Continuare?'))return; if(t!=='mock'&&mockState&&mockState.running){clearInterval(mockState.tick);mockState=null} cur=t;paintTabs();render()}
+function render(){const v=document.getElementById('view');
+ if(cur==='piano')v.innerHTML=rPiano();
+ else if(cur==='quiz')rQuiz(v);
+ else if(cur==='mock')rMock(v);
+ else if(cur==='flash')rFlash(v);
+ else if(cur==='errori')rErr(v);
+ else v.innerHTML=rStats();
+ window.scrollTo(0,0)}
+
+// ============ PIANO ============
+function rPiano(){const ti=todayIdx();
+ let h=`<h2>Piano di studio · 7 giorni</h2><p class="sub">18 ore totali: 2 h al giorno, 5 h nei giorni 3 e 4. Metodo: recupero attivo, ripetizione spaziata, mock cronometrati e re-test degli errori. Giorno di inizio: ${S.startDate} <button class="btn sm sec" onclick="resetStart()">Imposta oggi come Giorno 1</button></p>`;
+ h+=`<div class="card"><span class="eyebrow">Come si calcola il punteggio (RIPAM)</span><div class="chips"><span class="chip plus">Esatta +0,75</span><span class="chip minus">Errata −0,25</span><span class="chip zero">Omessa 0</span><span class="chip plus">Situazionale: 0,75 / 0,375 / 0 — mai penalità</span></div><p class="note">Prova reale: 40 quesiti in 60 minuti (25 materie + 8 logica + 7 situazionali). Soglia di idoneità: <b>21/30</b>. Strategia: rispondi solo se elimini almeno un\'opzione; sui situazionali rispondi sempre.</p></div>`;
+ PLAN.forEach(p=>{const done=p.tasks.every((_,i)=>S.tasks[`d${p.d}t${i}`]);const nd=p.tasks.filter((_,i)=>S.tasks[`d${p.d}t${i}`]).length;
+  h+=`<div class="day ${done?'done':(p.d===ti?'today':'')}"><h3>Giorno ${p.d} — ${p.title}</h3><div class="dmeta">${p.h} · <span class="dprog">${nd}/${p.tasks.length} attività</span>${p.d===ti?' · <b style="color:#C99700">OGGI</b>':''}</div>`;
+  p.tasks.forEach((t,i)=>{const k=`d${p.d}t${i}`;h+=`<div class="task ${S.tasks[k]?'done':''}"><input type="checkbox" id="${k}" ${S.tasks[k]?'checked':''} onchange="tgl('${k}')"><label for="${k}">${t[0]}</label><span class="min">${t[1]}′</span></div>`});
+  h+=`</div>`});
+ return h}
+function tgl(k){S.tasks[k]=!S.tasks[k];save();render()}
+function resetStart(){S.startDate=new Date().toISOString().slice(0,10);save();render()}
+// ============ QUIZ PER MATERIA ============
+function rQuiz(v){
+ if(!quizState){let h=`<h2>Quiz per materia</h2><p class="sub">Feedback immediato con spiegazione dopo ogni risposta: leggi sempre il perché. Gli errori finiscono automaticamente nel registro Errori.</p><div class="qtopic">`;
+  Object.keys(TOPICS).forEach(t=>{const n=t==='situazionale'?SITU.length:BANK.filter(q=>q.t===t).length;h+=`<button class="tbtn" onclick="startQuiz('${t}')">${TOPICS[t]} <span class="n">(${n})</span></button>`});
+  h+=`</div>`;v.innerHTML=h;return}
+ const q=quizState.list[quizState.i];
+ let h=`<h2>${TOPICS[quizState.topic]}</h2><div class="card qbox"><div class="qmeta"><span>Quesito ${quizState.i+1} di ${quizState.list.length}</span><span>Corrette: ${quizState.ok}</span></div><p class="qtext">${esc(q.q)}</p>`;
+ const answered=quizState.ans!=null;
+ q.o.forEach((o,i)=>{let cls='opt';
+  if(answered){if(q.s){if(q.s[i]===0.75)cls+=' right';else if(i===quizState.ans)cls+=(q.s[i]>0?' sel':' wrong')}else{if(i===q.c)cls+=' right';else if(i===quizState.ans)cls+=' wrong'}}
+  h+=`<button class="${cls}" ${answered?'disabled':''} onclick="ansQuiz(${i})">${String.fromCharCode(65+i)}. ${esc(o)}</button>`});
+ if(answered){
+  if(q.s){const pt=q.s[quizState.ans];h+=`<p class="verdict ${pt===0.75?'ok':(pt>0?'':'ko')}">${pt===0.75?'Risposta più efficace · +0,75':(pt>0?'Risposta neutra · +0,375':'Risposta meno efficace · 0')}</p>`}
+  else h+=`<p class="verdict ${quizState.ans===q.c?'ok':'ko'}">${quizState.ans===q.c?'Esatto · +0,75':'Errato · −0,25 (in prova reale)'}</p>`;
+  h+=`<div class="expl"><b>Spiegazione.</b> ${esc(q.e)}</div><div class="btnrow"><button class="btn" onclick="nextQuiz()">${quizState.i+1<quizState.list.length?'Prossimo quesito →':'Vedi risultato'}</button></div>`}
+ h+=`</div><button class="btn sec sm" onclick="quizState=null;render()">← Cambia materia</button>`;
+ v.innerHTML=h}
+function startQuiz(t){const src=t==='situazionale'?SITU:BANK.filter(q=>q.t===t);quizState={topic:t,list:shuffle(src),i:0,ok:0,ans:null};render()}
+function ansQuiz(i){const q=quizState.list[quizState.i];if(quizState.ans!=null)return;quizState.ans=i;
+ const ok=q.s?q.s[i]===0.75:i===q.c;if(ok)quizState.ok++;rec(q.id,ok,q.t||'situazionale');render()}
+function nextQuiz(){if(quizState.i+1<quizState.list.length){quizState.i++;quizState.ans=null;render()}
+ else{const p=Math.round(quizState.ok/quizState.list.length*100);document.getElementById('view').innerHTML=`<h2>${TOPICS[quizState.topic]}</h2><div class="card" style="text-align:center"><span class="eyebrow">Risultato quiz</span><p class="result-big">${p}%<small> · ${quizState.ok}/${quizState.list.length} corrette</small></p><p class="note">${p>=80?'Ottimo: materia consolidata, mantienila col ripasso spaziato.':(p>=60?'Buona base: rivedi le spiegazioni degli errori e ripeti domani.':'Materia debole: riparti dalle flashcard, poi ripeti questo quiz.')}</p><div class="btnrow" style="justify-content:center"><button class="btn" onclick="startQuiz('${quizState.topic}')">Ripeti</button><button class="btn sec" onclick="quizState=null;render()">Altre materie</button></div></div>`;quizState=null}}
+
+// ============ SIMULAZIONE 40q/60' ============
+function buildMock(){let qs=[];Object.keys(MOCK_WEIGHTS).forEach(t=>{qs=qs.concat(shuffle(BANK.filter(q=>q.t===t)).slice(0,MOCK_WEIGHTS[t]))});
+ qs=qs.concat(shuffle(BANK.filter(q=>q.t==='logica')).slice(0,8));qs=shuffle(qs).concat(shuffle(SITU).slice(0,7));return qs}
+function rMock(v){
+ if(!mockState){v.innerHTML=`<h2>Simulazione d'esame</h2><p class="sub">Replica fedele della prova RIPAM: 40 quesiti in 60 minuti — 25 di materia, 8 di logica, 7 situazionali in coda.</p>
+ <div class="card"><div class="chips"><span class="chip plus">Esatta +0,75</span><span class="chip minus">Errata −0,25</span><span class="chip zero">Omessa 0</span></div>
+ <p class="note">Puoi lasciare quesiti in bianco (nessuna penalità) e navigare liberamente. I situazionali non hanno mai penalità: rispondi sempre. Allo scadere del tempo la prova si chiude da sola. Soglia: <b>21/30</b>.</p>
+ <div class="btnrow"><button class="btn" onclick="startMock()">Avvia simulazione (60:00)</button></div></div>
+ ${S.mocks.length?`<div class="card"><span class="eyebrow">Storico simulazioni</span>${S.mocks.map((m,i)=>`<div class="stat"><span>Mock ${i+1} · ${m.date}</span><b class="${m.score>=21?'pass':'fail'}">${m.score.toFixed(2).replace('.',',')}/30 ${m.score>=21?'· IDONEO':'· sotto soglia'}</b></div>`).join('')}</div>`:''}`;return}
+ if(mockState.finished){return rMockResult(v)}
+ const q=mockState.qs[mockState.i], a=mockState.answers[mockState.i];
+ let h=`<div class="mockbar"><span style="font-size:.8rem;font-weight:700">Quesito ${mockState.i+1}/40 · ${q.s?'SITUAZIONALE':TOPICS[q.t].toUpperCase()}</span><span class="timer ${mockState.left<300?'low':''}" id="tmr">${fmtT(mockState.left)}</span></div>
+ <div class="card qbox"><p class="qtext">${esc(q.q)}</p>`;
+ q.o.forEach((o,i)=>{h+=`<button class="opt ${a===i?'sel':''}" onclick="pick(${i})">${String.fromCharCode(65+i)}. ${esc(o)}</button>`});
+ h+=`<div class="btnrow"><button class="btn sec sm" ${mockState.i===0?'disabled':''} onclick="mv(-1)">← Precedente</button>
+ <button class="btn sec sm" onclick="pick(null)">Lascia in bianco</button>
+ <button class="btn sm" ${mockState.i===39?'disabled':''} onclick="mv(1)">Successivo →</button>
+ <button class="btn warn sm" onclick="if(confirm('Consegnare la prova?'))endMock()">Consegna</button></div>
+ <div class="qnav">${mockState.qs.map((_,i)=>`<button class="qn ${mockState.answers[i]!=null?'answered':''} ${i===mockState.i?'cur':''}" onclick="mockState.i=${i};render()">${i+1}</button>`).join('')}</div></div>`;
+ v.innerHTML=h}
+function fmtT(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
+function startMock(){mockState={qs:buildMock(),answers:Array(40).fill(null),i:0,left:3600,running:true,finished:false};
+ mockState.tick=setInterval(()=>{mockState.left--;const t=document.getElementById('tmr');if(t){t.textContent=fmtT(mockState.left);if(mockState.left<300)t.classList.add('low')}if(mockState.left<=0)endMock()},1000);render()}
+function pick(i){mockState.answers[mockState.i]=i;if(mockState.i<39)mockState.i++;render()}
+function mv(d){mockState.i=Math.max(0,Math.min(39,mockState.i+d));render()}
+function endMock(){clearInterval(mockState.tick);mockState.running=false;mockState.finished=true;
+ let score=0,brk={};
+ mockState.qs.forEach((q,i)=>{const a=mockState.answers[i],t=q.s?'situazionale':q.t;brk[t]=brk[t]||{ok:0,ko:0,om:0};
+  if(q.s){if(a!=null){score+=q.s[a];if(q.s[a]===0.75)brk[t].ok++;else brk[t].ko++;rec(q.id,q.s[a]===0.75,'situazionale')}else brk[t].om++}
+  else{if(a==null)brk[t].om++;else if(a===q.c){score+=0.75;brk[t].ok++;rec(q.id,true,q.t)}else{score-=0.25;brk[t].ko++;rec(q.id,false,q.t)}}});
+ mockState.score=Math.max(0,Math.round(score*100)/100);mockState.brk=brk;
+ S.mocks.push({date:new Date().toLocaleDateString('it-IT'),score:mockState.score});save();paintHeader();render()}
+function rMockResult(v){const m=mockState,pass=m.score>=21;
+ let h=`<h2>Risultato simulazione</h2><div class="card" style="text-align:center"><span class="eyebrow">Punteggio</span>
+ <p class="result-big ${pass?'pass':'fail'}">${m.score.toFixed(2).replace('.',',')}<small> / 30 · soglia 21</small></p>
+ <p class="verdict ${pass?'ok':'ko'}">${pass?'IDONEO — sopra la soglia':'Sotto soglia — analizza gli errori qui sotto'}</p></div>
+ <div class="card"><span class="eyebrow">Dettaglio per materia</span><table class="brk"><tr><th>Materia</th><th>✓</th><th>✗</th><th>Omesse</th></tr>`;
+ Object.keys(m.brk).forEach(t=>{const b=m.brk[t];h+=`<tr><td>${TOPICS[t]}</td><td style="color:var(--ok);font-weight:700">${b.ok}</td><td style="color:var(--err);font-weight:700">${b.ko}</td><td>${b.om}</td></tr>`});
+ h+=`</table><p class="note">Gli errori sono già nel registro Errori: fai subito il re-test (è il passaggio che produce più guadagno).</p></div>
+ <div class="card"><span class="eyebrow">Revisione quesiti</span>`;
+ m.qs.forEach((q,i)=>{const a=m.answers[i];const okIdx=q.s?q.s.indexOf(0.75):q.c;const ok=q.s?(a!=null&&q.s[a]===0.75):a===q.c;
+  h+=`<hr class="sep"><p style="font-weight:600">${i+1}. ${esc(q.q)}</p><p class="note">Tua risposta: <b>${a==null?'omessa':String.fromCharCode(65+a)+'. '+esc(q.o[a])}</b> ${a==null?'':(ok?'<span style="color:var(--ok);font-weight:900">✓</span>':'<span style="color:var(--err);font-weight:900">✗</span>')}<br>Risposta ${q.s?'più efficace':'esatta'}: <b>${String.fromCharCode(65+okIdx)}. ${esc(q.o[okIdx])}</b><br>${esc(q.e)}</p>`});
+ h+=`</div><div class="btnrow"><button class="btn" onclick="mockState=null;go('errori')">Vai al re-test errori →</button><button class="btn sec" onclick="mockState=null;render()">Chiudi</button></div>`;
+ v.innerHTML=h}
+
+// ============ FLASHCARD (Leitner 5 livelli) ============
+const INTERVALS=[0,1,2,4,7];
+function dueCards(){const now=Date.now();return CARDS.filter(c=>{const s=S.srs[c.id];return !s||s.due<=now})}
+function rFlash(v){
+ if(!flashState){const due=dueCards();
+  v.innerHTML=`<h2>Flashcard · ripetizione spaziata</h2><p class="sub">Sistema Leitner a 5 livelli: le carte che sbagli tornano subito, quelle che sai si distanziano (0 → 1 → 2 → 4 → 7 giorni). Studiale ogni giorno.</p>
+  <div class="card" style="text-align:center"><span class="eyebrow">In scadenza ora</span><p class="result-big">${due.length}<small> / ${CARDS.length} carte</small></p>
+  <div class="btnrow" style="justify-content:center">${due.length?`<button class="btn" onclick="startFlash()">Inizia ripasso</button>`:'<p class="note">Tutte le carte sono programmate: torna più tardi o rivedi un quiz.</p>'}</div></div>`;return}
+ const c=flashState.list[flashState.i];
+ v.innerHTML=`<h2>Flashcard</h2><p class="fmeta">Carta ${flashState.i+1} di ${flashState.list.length} · ${TOPICS[c.t]}</p>
+ <div class="fcard" role="button" tabindex="0" onclick="flipCard()" onkeydown="if(event.key===' '||event.key==='Enter')flipCard()">
+ <span class="side">${flashState.back?'RISPOSTA':'DOMANDA — tocca per girare'}</span>
+ <p class="txt">${flashState.back?esc(c.b):esc(c.f).replace(/\{…\}/g,'<span class="gap">&nbsp;…&nbsp;</span>')}</p></div>
+ ${flashState.back?`<div class="srsrow"><button class="btn again" onclick="grade(0)">Di nuovo</button><button class="btn hard" onclick="grade(1)">Difficile</button><button class="btn good" onclick="grade(2)">La so</button></div>`:`<div class="btnrow" style="justify-content:center"><button class="btn" onclick="flipCard()">Mostra risposta</button></div>`}
+ <p class="note" style="text-align:center;margin-top:14px"><span class="kbd">Di nuovo</span> = torna al livello 1 · <span class="kbd">La so</span> = sale di livello e si allontana nel tempo</p>`}
+function startFlash(){flashState={list:shuffle(dueCards()),i:0,back:false};render()}
+function flipCard(){flashState.back=!flashState.back;render()}
+function grade(g){const c=flashState.list[flashState.i];let s=S.srs[c.id]||{box:0};
+ if(g===0)s.box=0;else if(g===1)s.box=Math.max(0,s.box);else s.box=Math.min(4,(s.box||0)+1);
+ s.due=Date.now()+(g===0?0:INTERVALS[s.box]*864e5)+(g===0?60000:0);S.srs[c.id]=s;save();
+ if(flashState.i+1<flashState.list.length){flashState.i++;flashState.back=false;render()}
+ else{document.getElementById('view').innerHTML=`<h2>Flashcard</h2><div class="card" style="text-align:center"><span class="eyebrow">Sessione completata</span><p class="result-big">✓</p><p class="note">Le carte segnate "Di nuovo" ricompariranno subito; le altre secondo l'intervallo del loro livello.</p><div class="btnrow" style="justify-content:center"><button class="btn" onclick="flashState=null;render()">Torna alle flashcard</button></div></div>`;flashState=null}}
+
+// ============ ERRORI ============
+function rErr(v){const ids=Object.keys(S.errors);
+ if(quizState&&quizState.topic==='__err'){return rQuiz(v)}
+ if(!ids.length){v.innerHTML=`<h2>Registro errori</h2><div class="empty">Nessun errore in sospeso. Ogni quesito sbagliato nei quiz o nelle simulazioni finisce qui e ne esce solo dopo <b>2 risposte corrette consecutive</b>.</div>`;return}
+ const byT={};ids.forEach(id=>{const t=S.errors[id].t;byT[t]=(byT[t]||0)+1});
+ v.innerHTML=`<h2>Registro errori</h2><p class="sub">Il re-test degli errori è l'attività a più alto rendimento: ripetili finché non escono dal registro (2 corrette di fila).</p>
+ <div class="card"><span class="eyebrow">Errori in sospeso: ${ids.length}</span>${Object.keys(byT).map(t=>`<div class="stat"><span>${TOPICS[t]}</span><b>${byT[t]}</b></div>`).join('')}
+ <div class="btnrow"><button class="btn" onclick="startErrQuiz()">Avvia quiz errori (${ids.length})</button></div></div>`}
+function startErrQuiz(){const ids=Object.keys(S.errors);const list=shuffle([...BANK,...SITU].filter(q=>ids.includes(q.id)));
+ quizState={topic:'__err',list,i:0,ok:0,ans:null};TOPICS.__err='Quiz errori';cur='quiz';paintTabs();render()}
+
+// ============ STATISTICHE ============
+function rStats(){const byT={};Object.keys(S.hist).forEach(id=>{const h=S.hist[id];byT[h.t]=byT[h.t]||{a:0,c:0};byT[h.t].a+=h.a;byT[h.t].c+=h.c});
+ const keys=Object.keys(byT);
+ let h=`<h2>Statistiche</h2><p class="sub">Percentuale di risposte corrette per materia (tutte le sessioni). Concentra lo studio dove la barra è rossa o gialla.</p>`;
+ if(!keys.length)return h+`<div class="empty">Ancora nessun dato: inizia con la simulazione diagnostica del Giorno 1.</div>`;
+ h+=`<div class="card">`;
+ keys.sort((a,b)=>(byT[a].c/byT[a].a)-(byT[b].c/byT[b].a)).forEach(t=>{const p=Math.round(byT[t].c/byT[t].a*100);
+  h+=`<div class="stat"><span style="min-width:150px">${TOPICS[t]||t}</span><span class="bar"><i class="${p<60?'low':(p<80?'mid':'hi')}" style="width:${p}%"></i></span><span class="pct">${p}%</span></div>`});
+ h+=`<p class="note">Rosso &lt; 60% · Giallo 60–79% · Verde ≥ 80%. Obiettivo prima dell'esame: nessuna materia sotto il 60% e media mock ≥ 24/30.</p></div>`;
+ h+=`<div class="card"><span class="eyebrow">Simulazioni</span>${S.mocks.length?S.mocks.map((m,i)=>`<div class="stat"><span>Mock ${i+1} · ${m.date}</span><b class="${m.score>=21?'pass':'fail'}">${m.score.toFixed(2).replace('.',',')}/30</b></div>`).join(''):'<div class="empty">Nessuna simulazione svolta.</div>'}</div>`;
+ h+=`<div class="card"><span class="eyebrow">Backup dei progressi</span><p class="note" style="margin-top:6px">I dati sono salvati in questo browser (localStorage): sopravvivono alla chiusura, ma vengono persi in incognito, cancellando i dati di navigazione o cambiando dispositivo. Esporta un backup a fine giornata e reimportalo quando serve.</p><div class="btnrow"><button class="btn sm" onclick="exportData()">Esporta progressi (.json)</button><button class="btn sec sm" onclick="document.getElementById('impFile').click()">Importa backup</button><input type="file" id="impFile" accept=".json,application/json" style="display:none" onchange="importData(this.files[0])"></div></div>`;
+ h+=`<div class="btnrow"><button class="btn warn sm" onclick="if(confirm('Azzerare tutti i progressi (piano, errori, flashcard, mock)?')){localStorage.removeItem(KEY);location.reload()}">Azzera tutti i dati</button></div>`;
+ return h}
+function exportData(){const blob=new Blob([JSON.stringify(S)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='ripam-progressi-'+new Date().toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(a.href)}
+function importData(f){if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!d||typeof d!=='object'||!('tasks'in d))throw 0;S=d;S.tasks=S.tasks||{};S.hist=S.hist||{};S.errors=S.errors||{};S.srs=S.srs||{};S.mocks=S.mocks||[];save();paintTabs();paintHeader();render();alert('Backup importato: progressi ripristinati.')}catch(e){alert('File non valido: seleziona un backup esportato da questa app.')}};r.readAsText(f)}
+
+paintTabs();paintHeader();render();
+</script>
+</body>
+</html>
