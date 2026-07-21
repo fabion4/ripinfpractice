@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bignami AGID · EP — AGID01 · 6 ore + prova aperta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#17324D; --blu:#0066CC; --paper:#F5F7FA; --card:#FFFFFF; --ink:#16232F;
+  --muted:#5C6F82; --line:#D9E2EC; --ok:#007A52; --ok-bg:#E6F5EF; --err:#CE2B37; --err-bg:#FBEBED;
+  --amber:#C99700; --amber-bg:#FFF6DE; --violet:#5B2A86; --violet-bg:#F1E9F8; --radius:10px;
+  --shadow:0 1px 3px rgba(23,50,77,.08),0 4px 14px rgba(23,50,77,.06);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:'Titillium Web',system-ui,-apple-system,sans-serif;background:var(--paper);color:var(--ink);font-size:16px;line-height:1.55}
+button{font-family:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--blu);outline-offset:2px}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+
+header{background:var(--navy);color:#fff;padding:14px 16px 10px;position:sticky;top:0;z-index:50}
+.hrow{display:flex;align-items:center;justify-content:space-between;max-width:960px;margin:0 auto;gap:10px}
+.wordmark{font-weight:900;font-size:1.12rem;letter-spacing:.03em;text-transform:uppercase}
+.wordmark small{font-weight:400;opacity:.75;font-size:.7rem;letter-spacing:.08em;display:block;text-transform:none}
+.cd{min-width:140px;flex:0 0 auto;text-align:right}
+.cd .lbl{font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;opacity:.8;display:block}
+.cd .big{font-size:1.3rem;font-weight:900;color:#FFD23F;font-variant-numeric:tabular-nums}
+.cd .sm{font-size:.7rem;opacity:.85}
+
+nav{background:var(--navy);position:sticky;top:64px;z-index:49;border-top:1px solid rgba(255,255,255,.12)}
+.tabs{display:flex;overflow-x:auto;max-width:960px;margin:0 auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{background:none;border:none;color:rgba(255,255,255,.72);padding:11px 13px;font-size:.84rem;font-weight:600;white-space:nowrap;border-bottom:3px solid transparent}
+.tab[aria-selected="true"]{color:#fff;border-bottom-color:#FFD23F}
+
+main{max-width:960px;margin:0 auto;padding:18px 14px 90px}
+h2{font-weight:900;font-size:1.3rem;text-transform:uppercase;letter-spacing:.03em;color:var(--navy);margin-bottom:4px}
+h3{color:var(--navy)}
+.sub{color:var(--muted);font-size:.92rem;margin-bottom:16px}
+.eyebrow{font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--blu);font-weight:700}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin-bottom:14px}
+.note{font-size:.82rem;color:var(--muted);margin-top:10px}
+.kbd{background:var(--navy);color:#fff;border-radius:4px;padding:1px 6px;font-size:.78rem;font-weight:700}
+b{color:var(--navy)}
+hr.sep{border:none;border-top:1px solid var(--line);margin:14px 0}
+
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.chip{font-size:.74rem;font-weight:700;padding:3px 9px;border-radius:20px;border:1.5px solid}
+.chip.v{color:var(--violet);border-color:var(--violet);background:var(--violet-bg)}
+.chip.b{color:var(--blu);border-color:var(--blu);background:#EDF4FC}
+.chip.plus{color:var(--ok);border-color:var(--ok);background:var(--ok-bg)}
+
+.btn{display:inline-flex;align-items:center;gap:7px;background:var(--blu);color:#fff;border:none;border-radius:8px;padding:11px 18px;font-weight:700;font-size:.95rem}
+.btn:hover{background:#0053a6}
+.btn.sec{background:#fff;color:var(--blu);border:2px solid var(--blu)}.btn.sec:hover{background:#EDF4FC}
+.btn.warn{background:var(--err)}.btn.good{background:var(--ok)}.btn.hard{background:var(--amber)}.btn.again{background:var(--err)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.sm{padding:7px 12px;font-size:.84rem}
+.btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+
+.speak{background:#EDF4FC;border:1.5px solid var(--blu);color:var(--blu);border-radius:20px;padding:4px 12px;font-size:.76rem;font-weight:700;display:inline-flex;align-items:center;gap:6px}
+.speak:hover{background:var(--blu);color:#fff}
+.concept-h{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+
+/* Sprint */
+.day{border-left:5px solid var(--line);padding-left:14px;margin-bottom:18px}
+.day.now{border-left-color:#FFD23F}.day.done{border-left-color:var(--ok)}
+.day h3{font-weight:900;font-size:1rem;text-transform:uppercase}
+.day .dmeta{font-size:.8rem;color:var(--muted);margin-bottom:8px}
+.task{display:flex;align-items:flex-start;gap:10px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;margin-bottom:6px;background:#fff}
+.task input{width:20px;height:20px;margin-top:2px;accent-color:var(--ok);flex:0 0 auto}
+.task.done label{text-decoration:line-through;color:var(--muted)}
+.task label{font-size:.92rem;flex:1}
+.task .min{font-size:.74rem;font-weight:700;color:var(--blu);white-space:nowrap;background:#EDF4FC;border-radius:14px;padding:2px 8px}
+
+/* Bignami moduli */
+.mtag{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:8px;background:var(--navy);color:#fff;font-weight:900;font-size:.95rem;flex:0 0 auto}
+.passo{border:1px solid var(--line);border-radius:8px;margin-bottom:10px;overflow:hidden}
+.passo>summary{list-style:none;cursor:pointer;padding:11px 13px;font-weight:800;color:var(--navy);font-size:.94rem;background:var(--paper);display:flex;align-items:center;gap:8px}
+.passo>summary::-webkit-details-marker{display:none}
+.passo>summary:before{content:"▸";color:var(--blu);font-weight:900}
+.passo[open]>summary:before{content:"▾"}
+.passo .body{padding:8px 13px 12px}
+.kv{margin-bottom:8px;font-size:.9rem}
+.kv b{display:block;color:var(--navy)}
+.kv .d{color:var(--ink)}
+
+/* Prove / Test — recupero attivo */
+.ptag{display:inline-block;font-size:.64rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;border-radius:6px;color:#fff}
+.ptag.caso{background:var(--violet)}.ptag.sint{background:var(--blu)}.ptag.test{background:var(--amber);color:#3a2c00}
+.pillar{font-size:.8rem;color:var(--muted);font-weight:700;margin:6px 0 2px}
+.traccia{border-left:4px solid var(--navy);background:var(--paper);padding:10px 12px;border-radius:0 8px 8px 0;font-size:.92rem;margin:10px 0}
+.traccia .q{font-weight:700;color:var(--navy)}
+.point{border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:8px;display:flex;gap:10px;align-items:flex-start}
+.point input{width:19px;height:19px;margin-top:3px;accent-color:var(--ok);flex:0 0 auto}
+.point .pk{font-weight:900;color:var(--navy);font-size:.9rem;display:block;margin-bottom:2px}
+.point .pv{font-size:.9rem}
+.point.ck{background:var(--ok-bg);border-color:var(--ok)}
+.selfscore{font-weight:900;color:var(--navy)}
+
+/* Concetti visivi */
+.pyr{display:flex;flex-direction:column;align-items:center;gap:4px;margin:12px 0}
+.pyr .lvl{color:#fff;font-weight:800;text-align:center;padding:9px 8px;border-radius:6px;font-size:.86rem}
+.pyr .l3{width:56%;background:var(--err)}.pyr .l2{width:74%;background:var(--amber)}.pyr .l1{width:92%;background:var(--ok)}
+.pyr .cap{font-size:.72rem;font-weight:600;opacity:.92;display:block}
+.stack{display:flex;flex-direction:column;gap:6px;margin:12px 0}
+.stack .row{display:grid;grid-template-columns:78px 1fr;gap:8px}
+.stack .lab{background:var(--navy);color:#fff;font-weight:800;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.82rem}
+.stack .desc{border:1px solid var(--line);border-radius:6px;padding:8px 10px;font-size:.84rem;background:#fff}
+.tl{position:relative;margin:12px 0 4px;padding-left:22px}
+.tl:before{content:"";position:absolute;left:7px;top:4px;bottom:4px;width:3px;background:var(--line);border-radius:2px}
+.tl .step{position:relative;margin-bottom:12px}
+.tl .step:before{content:"";position:absolute;left:-19px;top:3px;width:13px;height:13px;border-radius:50%;background:var(--blu);border:3px solid #fff;box-shadow:0 0 0 2px var(--blu)}
+.tl .step .h{font-weight:900;color:var(--navy);font-size:.92rem}
+.tl .step .t{font-size:.7rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--err)}
+.tl .step .d{font-size:.86rem}
+.flow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:12px 0;justify-content:center}
+.flow .node{background:#fff;border:2px solid var(--blu);color:var(--navy);border-radius:8px;padding:8px 11px;font-weight:800;font-size:.82rem;text-align:center;min-width:88px}
+.flow .node small{display:block;font-weight:600;color:var(--muted);font-size:.68rem}
+.flow .arr{color:var(--blu);font-weight:900;font-size:1.1rem}
+.kpicard{border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:8px;border-top:4px solid var(--blu)}
+.kpicard h4{color:var(--navy);font-size:.94rem;margin-bottom:4px}
+.kpicard ul{margin:0 0 0 18px;font-size:.86rem}
+table.cmd{width:100%;border-collapse:collapse;font-size:.84rem;margin-top:8px}
+table.cmd td,table.cmd th{padding:7px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+table.cmd th{font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+table.cmd td:first-child{font-weight:900;color:var(--blu);width:26px}
+table.cmd td:nth-child(2){font-weight:700;color:var(--navy);white-space:nowrap}
+
+/* Flashcards */
+.fcard{background:var(--navy);color:#fff;border-radius:14px;padding:30px 22px;min-height:180px;display:flex;flex-direction:column;justify-content:center;text-align:center;box-shadow:var(--shadow);margin-bottom:14px}
+.fcard .side{font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;opacity:.6;margin-bottom:12px}
+.fcard .txt{font-size:1.1rem;font-weight:600;line-height:1.55}
+.fcard .txt .gap{background:rgba(255,210,63,.25);border-bottom:2px solid #FFD23F;border-radius:3px;padding:0 6px}
+.srsrow{display:flex;gap:8px}.srsrow .btn{flex:1;justify-content:center}
+.fmeta{font-size:.8rem;color:var(--muted);text-align:center;margin-bottom:8px}
+.result-big{font-size:2.4rem;font-weight:900;color:var(--navy)}
+.result-big small{font-size:1rem;color:var(--muted);font-weight:600}
+.tagpick{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.tbtn{border:1.5px solid var(--line);background:#fff;border-radius:20px;padding:6px 12px;font-size:.8rem;font-weight:600}
+.tbtn.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+/* Audio */
+.audiobar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--navy);color:#fff;border-radius:var(--radius);padding:12px 14px;position:sticky;top:118px;z-index:40;box-shadow:var(--shadow)}
+.audiobar .now{flex:1;min-width:130px;font-size:.86rem;font-weight:700}
+.audiobar .now small{display:block;opacity:.7;font-weight:400;font-size:.72rem}
+.iconbtn{background:rgba(255,255,255,.14);border:none;color:#fff;border-radius:8px;width:42px;height:42px;font-size:1.1rem;display:inline-flex;align-items:center;justify-content:center}
+.iconbtn:hover{background:rgba(255,255,255,.28)}
+.iconbtn.play{background:#FFD23F;color:var(--navy);width:52px;height:52px;font-size:1.3rem}
+.plist{list-style:none;margin-top:8px}
+.plist li{display:flex;align-items:center;gap:10px;padding:9px 10px;border:1px solid var(--line);border-radius:8px;margin-bottom:6px;font-size:.88rem}
+.plist li.playing{border-color:var(--blu);background:#EDF4FC;font-weight:700}
+.plist li .n{width:24px;height:24px;border-radius:50%;background:var(--navy);color:#fff;font-size:.72rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.plist li.playing .n{background:var(--blu)}
+.rate{display:flex;align-items:center;gap:8px;font-size:.82rem;color:var(--muted);margin-top:10px}
+.rate input{flex:1}
+
+/* Strategia */
+.tpl{background:var(--paper);border:1px dashed var(--line);border-radius:8px;padding:12px;font-size:.88rem}
+.warnbox{background:var(--amber-bg);border:1px solid var(--amber);border-radius:8px;padding:10px 12px;font-size:.84rem}
+</style>
+</head>
+<body>
+<header>
+  <div class="hrow">
+    <div class="wordmark">Bignami AGID · EP<small>AGID01 · 6 ore ad alto rendimento + prova aperta</small></div>
+    <div class="cd"><span class="lbl">Alla prova (22 lug 2026)</span><span class="big" id="cdBig">—</span><span class="sm" id="cdSm"></span></div>
+  </div>
+</header>
+<nav><div class="tabs" role="tablist" id="tabbar"></div></nav>
+<main id="view"></main>
+<script>
+/* =================================================================
+   Contenuti — Concorso Unico RIPAM · Elevate Professionalità AGID (AGID01)
+   Fonte: "Prove d'esame concorso Ripam EP - Google Gemini.html"
+   Bignami 6 ore (4 moduli, 13 materie) + 4 prove + traccia finale + 10 test flash.
+   ================================================================= */
+const EXAM_DATE='2026-07-22T09:00:00';
+
+/* ---- ENTE / PROFILO ---- */
+const ENTE={
+ funzioni:[
+  ['Linee guida e regole tecniche','Emana gli standard del CAD: accessibilità, conservazione digitale, firme elettroniche, sicurezza dei sistemi informativi.'],
+  ['Indirizzo delle piattaforme abilitanti','Promuove e vigila su SPID/CIE, pagoPA, App IO e sull\'interoperabilità dei dati tramite la PDND.'],
+  ['PNRR e Strategia Cloud','Monitora la transizione al Cloud della PA (Cloud Italia) insieme al DTD e all\'ACN.'],
+  ['Vigilanza e sanzioni','Poteri di vigilanza/sanzionatori su conservatori accreditati, gestori d\'identità e obblighi di digitalizzazione delle PA.']
+ ],
+ profilo:[
+  ['Alta specializzazione tecnica e progettuale','Progettazione di grandi architetture nazionali/europee conformi al ModI; governance di progetti ICT strategici (PNRR).'],
+  ['Standard e regolamentazione','Redazione di Linee Guida tecniche (IA, dati aperti, cybersecurity by design); valutazione della conformità tecnologica delle PA.'],
+  ['Autonomia gestionale e procurement','Coordinamento di team interdisciplinari; gestione dei fornitori nei bandi ICT e verifica degli SLA.']
+ ]
+};
+
+/* ---- BIGNAMI: 4 MODULI (teoria flash) ---- */
+const MODULI=[
+ {n:1,tit:'CAD, Interoperabilità e Piattaforme',mat:'CAD · Modelli di interoperabilità · Innovazione ICT',
+  passi:[
+   {h:'CAD — Codice dell\'Amministrazione Digitale (D.Lgs. 82/2005)',kv:[
+     ['Diritto all\'uso delle tecnologie (art. 3)','Cittadini e imprese hanno diritto a usare le tecnologie telematiche con la PA: un servizio non digitale rende la PA inadempiente.'],
+     ['Domicilio digitale (art. 3-bis)','Indirizzo PEC/recapito certificato eleggibile nei registri nazionali (INAD, INI-PEC): la PA vi notifica gli atti, azzerando le raccomandate cartacee.'],
+     ['Digital by Default e Once-Only','Servizi nativi digitali e Mobile First; lo Stato non può chiedere due volte lo stesso dato che già possiede.']]},
+   {h:'ModI (Modello di Interoperabilità) e PDND',kv:[
+     ['ModI','Regole tecniche e standard AgID per far cooperare i sistemi delle PA: API sicure, aperte e standardizzate (REST/SOAP), scambio tracciato e non ripudiabile (mutual TLS, firme digitali dei messaggi, token OAuth2). Tre livelli: tecnico, semantico, organizzativo.'],
+     ['PDND (Piattaforma Digitale Nazionale Dati)','Catalogo unico delle API. Erogatore pubblica un E-Service; Fruitore chiede l\'abilitazione; la PDND (orchestratore) valida la richiesta e stringe l\'accordo di interoperabilità in automatico, senza convenzioni cartacee.'],
+     ['Attenzione (tranello)','La PDND NON è un database centrale: i dati restano nei server dell\'ente titolare; sulla PDND viaggia solo la "chiamata" (E-Service).']]},
+   {h:'Piattaforme abilitanti (SPID/CIE, pagoPA, App IO)',kv:[
+     ['SPID / CIE','Il CAD vieta i login proprietari: l\'accesso ai servizi avviene solo con SPID o CIE, con autenticazione certa a livello europeo (eIDAS).'],
+     ['pagoPA','Infrastruttura tecnologica pubblica (non una banca): obbligo di incassare ogni spettanza tramite pagoPA, con riconciliazione contabile automatica.'],
+     ['App IO','Punto di contatto unico mobile tra PA e cittadino: canale per notifiche e scadenze, integrato con pagoPA per il pagamento in-app.']]}
+  ]},
+ {n:2,tit:'Cloud, Migrazione, Dati e IA',mat:'Migrazione/consolidamento · Architetture applicative · Modellazione dati e Machine Learning',
+  passi:[
+   {h:'Classificazione dei dati (art. 33-septies, D.L. 179/2012)',kv:[
+     ['Ordinari','Compromissione senza danno all\'interesse pubblico (delibere, albo pretorio) → Cloud pubblico qualificato ACN.'],
+     ['Critici','Funzioni essenziali dello Stato o dati personali/sensibili (sanitari, giudiziari, tributi) → Cloud qualificato ACN ad alta sicurezza.'],
+     ['Strategici','Compromissione che impatta la sicurezza nazionale (ANPR, Difesa, Interno) → obbligo di residenza sul PSN (Polo Strategico Nazionale).'],
+     ['Distinzione da EP','Un dato sensibile è di per sé Critico; diventa Strategico quando la sua compromissione impatta la sicurezza/continuità dello Stato su scala paese (es. l\'intero archivio nazionale INPS).']]},
+   {h:'Modelli di servizio e strategie di migrazione (6R)',kv:[
+     ['IaaS / PaaS / SaaS','IaaS: affitti hardware/VM (oneri alti: SO, patch, sicurezza). PaaS: affitti la piattaforma/DBaaS (oneri medi: solo codice e dati). SaaS: software pronto via web (oneri minimi) → modello preferito dal paradigma Cloud First di AgID.'],
+     ['Rehost ("lift & shift")','Sposti l\'app com\'è su una VM (IaaS): sconsigliato da AgID, ammesso solo come fase transitoria per togliere l\'app da hardware obsoleto.'],
+     ['Replatform / Refactor','Riscrivi parti dell\'app in ottica Cloud Native (microservizi, container Docker/Kubernetes, PaaS).'],
+     ['Replace','Dismetti il sistema locale e adotti una soluzione SaaS già qualificata nel catalogo ACN/AgID: azzera gli oneri sistemistici.']]},
+   {h:'Dati, semantica e IA nella PA',kv:[
+     ['DCAT-AP_IT','Profilo nazionale di metadatazione dei dataset/Open Data della PA (titolare, licenza, aggiornamento) sul portale dati.gov.it.'],
+     ['OntoPiA','Rete delle ontologie e vocabolari controllati della PA gestita da AgID, in Linked Open Data (RDF/OWL): garantisce l\'interoperabilità semantica.'],
+     ['Linee Guida AgID sull\'IA','Principi di Trasparenza, Spiegabilità e Non esclusività della decisione algoritmica: sempre supervisione umana (Human-in-the-loop).'],
+     ['AI Act UE','I sistemi IA della PA per sussidi, idoneità o graduatorie sono ad Alto Rischio → valutazione d\'impatto (DPIA), dati d\'addestramento privi di bias, registro di tracciabilità.']]}
+  ]},
+ {n:3,tit:'Normazione, Agile e Qualità del software',mat:'Normazione tecnica · Qualità e metriche software · Gestione progettuale',
+  passi:[
+   {h:'Gestione dei progetti ICT (Agile, Scrum, DevOps)',kv:[
+     ['Agile / Scrum','Progetto scomposto in Sprint brevi (2–4 settimane) con un incremento di software funzionante e testato ogni volta. Supera il modello rigido Waterfall.'],
+     ['Ruoli Scrum','Product Owner (definisce i requisiti e gestisce il Product Backlog prioritizzato); Scrum Master (facilita e rimuove gli ostacoli); Development Team (sviluppa e testa).'],
+     ['DevOps e CI/CD','Integrazione continua fra Sviluppo e Operations; automazione di test e rilascio: a ogni modifica il codice è testato e pubblicato automaticamente (pipeline).']]},
+   {h:'Qualità, metriche e normazione tecnica',kv:[
+     ['Function Points (ISO/IEC 20926)','Misura quantitativa delle dimensioni del software sulle funzionalità erogate (non sulle righe di codice KLOC): serve a stimare costi e sforzo nelle gare (Cost per FP).'],
+     ['ISO/IEC 25010','Norma sulla qualità del software: prestazioni, compatibilità, usabilità, affidabilità, sicurezza, manutenibilità, portabilità.'],
+     ['eIDAS (UE 910/2014 ed eIDAS 2)','Identificazione elettronica e servizi fiduciari (firme, marche temporali, PEC); introduce l\'European Digital Identity Wallet.'],
+     ['NIS 2 (UE 2022/2555)','Alza i requisiti minimi di sicurezza e la notifica degli incidenti per PA e infrastrutture critiche, con sanzioni severe agli organi apicali.']]}
+  ]},
+ {n:4,tit:'Appalti ICT, Budget, Performance e Trasparenza',mat:'Codice appalti · Formazione del budget · Performance e trasparenza',
+  passi:[
+   {h:'Codice degli Appalti (D.Lgs. 36/2023) e gare ICT',kv:[
+     ['Principio del Risultato (art. 1)','L\'affidamento punta all\'esecuzione leale e tempestiva del contratto col miglior rapporto qualità/prezzo.'],
+     ['Principio della Fiducia (art. 2)','Favorisce l\'autonomia e la responsabilità di funzionari e DEC.'],
+     ['Strumenti d\'acquisto','Sotto soglia: MePA (Mercato Elettronico della PA) e Accordi Quadro Consip. Vietata la ricerca libera online.'],
+     ['Riuso del software (art. 69 CAD)','Prima di acquistare/sviluppare ex-novo, obbligo di verificare su Developers Italia se esiste già una soluzione open source riusabile.'],
+     ['Clausole ICT','SLA vincolanti (es. disponibilità 99,9%, tempi di ripristino); proprietà del codice alla PA e rilascio Open Source su repository aperto.']]},
+   {h:'Budget, Performance e Trasparenza',kv:[
+     ['CapEx vs OpEx','CapEx = investimenti una tantum (hardware, sviluppo iniziale) — coperti soprattutto dal PNRR. OpEx = spesa corrente (canoni SaaS/cloud). Il cloud sposta il budget da CapEx a OpEx (pay-per-use).'],
+     ['Performance (D.Lgs. 150/2009, "Brunetta")','Ciclo della performance: obiettivi → risorse → monitoraggio → valutazione. La digitalizzazione è mezzo per migliorare la performance, non un fine.'],
+     ['PIAO','Piano Integrato di Attività e Organizzazione: documento triennale unico che assorbe Piano della Performance, PTPC anticorruzione e Piano Triennale per l\'Informatica (PTIPA).'],
+     ['Trasparenza e FOIA (D.Lgs. 33/2013)','Sezione "Amministrazione Trasparente" (organizzazione, bilanci, appalti). FOIA / Accesso civico generalizzato: chiunque accede a dati/documenti senza dover motivare l\'interesse (salvo limiti di privacy/sicurezza).']]}
+  ]}
+];
+
+/* ---- PROVE (4 + traccia finale) — recupero attivo ---- */
+const PROVE=[
+ {id:'p1',tipo:'caso',tag:'Caso gestionale',titolo:'Governance e gestione dei progetti ICT',pillar:'Migrazione al Cloud · Strategia Cloud Italia',
+  contesto:`L'Amministrazione XY migra dall'On-Premises a un Cloud certificato (Strategia Cloud Italia, AgID + ACN), inclusa una banca dati critica con i dati anagrafici dei cittadini.`,
+  domanda:`Redigi le linee guida del Piano di Migrazione: (1) classificazione dei dati; (2) modelli di servizio Cloud (IaaS/PaaS/SaaS) con scelta motivata per il DB critico; (3) matrice dei rischi con almeno 2 rischi e contromisure.`,
+  punti:[
+   {k:'1 · Classificazione dati',v:`Framework ACN/AgID: Ordinari, Critici, Strategici. I dati anagrafici sono <b>Strategici</b> → migrazione solo su <b>PSN</b> o cloud qualificato ad alti requisiti.`},
+   {k:'2 · Modello di servizio',v:`Per il DB critico: <b>PaaS</b> (DBaaS) — o SaaS se conforme. Sgrava da hardware e SO, mantenendo il controllo logico su dati e accessi.`},
+   {k:'3a · Vendor lock-in',v:`Contromisura: standard e tecnologie aperte (SQL standard, container open-source) + <b>Exit Strategy</b> contrattuale.`},
+   {k:'3b · Data breach in transizione',v:`Contromisura: cifratura <b>in transit e at rest</b> con chiavi dell'ente (<b>BYOK</b>) + backup parallelo e disaccoppiato fino al collaudo.`}
+  ]},
+ {id:'p2',tipo:'sint',tag:'Quesito sintetico',titolo:'CAD e Interoperabilità',pillar:'ModI · PDND · Once-Only',
+  domanda:`Illustra le finalità del ModI e il ruolo della PDND; spiega come il principio Once-Only modifichi il rapporto cittadino-PA.`,
+  punti:[
+   {k:'ModI',v:`Regole tecniche e giuridico-organizzative per comunicazioni sicure, standardizzate e scalabili tra PA, su <b>API REST/SOAP</b> con <b>eIDAS mutual TLS</b> e <b>OAuth2</b>; tre livelli tecnico/semantico/organizzativo.`},
+   {k:'PDND',v:`Catalogo e orchestratore centrale: abilita gli <b>e-service</b> tra enti verificando a monte le autorizzazioni, senza convenzioni bilaterali cartacee.`},
+   {k:'Once-Only',v:`Sancito dal CAD: la PA <b>non richiede</b> dati già posseduti da un'altra PA (ISEE, certificato di nascita); li reperisce via API su PDND.`}
+  ]},
+ {id:'p3',tipo:'caso',tag:'Caso gestionale',titolo:'Sicurezza e continuità operativa',pillar:'Incident Response · Ransomware · ACN e Garante',
+  contesto:`Un ente locale subisce un Ransomware che cripta i server dei servizi al cittadino.`,
+  domanda:`Da RTD, descrivi l'Incident Response nelle prime 48 ore, con gli obblighi verso ACN e Garante Privacy.`,
+  punti:[
+   {k:'Sequenza',v:`<b>Contenimento → Notifica → Eradicazione → Ripristino</b>.`},
+   {k:'0–4h · Contenimento',v:`Isola LAN/VLAN; <b>non spegnere</b> (prove volatili in RAM per la digital forensics); attiva l'Unità di Crisi.`},
+   {k:'4–24h · Notifica',v:`<b>ACN via CSIRT Italia</b> (perimetro / NIS 2). Data breach → <b>Garante entro 72h</b> (art. 33 GDPR).`},
+   {k:'24–48h · Ripristino',v:`Bonifica da <b>immagini pulite</b>; verifica backup non cifrati; <b>Disaster Recovery</b> dai servizi prioritari.`}
+  ]},
+ {id:'p4',tipo:'sint',tag:'Quesito sintetico',titolo:'Transizione digitale e KPI',pillar:'PNRR M1C1 · piattaforme abilitanti',
+  domanda:`Descrivi i KPI quantitativi e qualitativi per SPID/CIE, pagoPA e App IO in una PA.`,
+  punti:[
+   {k:'Premessa',v:`Non conta la sola "attivazione tecnica" ma l'<b>effettivo utilizzo e gradimento</b>: distinguere quantitativi e qualitativi.`},
+   {k:'SPID/CIE',v:`Quant.: % accessi con identità digitale; dismissione vecchie credenziali. Qual.: tempo medio di login, minore abbandono.`},
+   {k:'pagoPA',v:`Quant.: tasso di digitalizzazione incassi; riduzione dei tempi di riconciliazione contabile.`},
+   {k:'App IO',v:`Quant.: n. servizi integrati; notifiche push inviate. Qual./econ.: risparmio da dematerializzazione.`}
+  ]},
+ {id:'pf',tipo:'caso',tag:'Traccia d\'esame finale',titolo:'Portale autorizzazioni imprese (PNRR)',pillar:'Sintesi: PNRR → ModI/PDND → Sicurezza/Cloud → Appalti/SLA',
+  contesto:`AgID supporta un Ministero nella digitalizzazione di un servizio che rilascia autorizzazioni alle imprese: nuovo portale web finanziato dal PNRR.`,
+  domanda:`Illustra la strategia di gestione del progetto: interoperabilità, sicurezza dei dati e criteri per l'affidamento del software. (Il modello premia 4 punti macro.)`,
+  punti:[
+   {k:'1 · Governance e PNRR (PM)',v:`Rispetta i <b>Milestone e Target</b> del PNRR; project management <b>Agile</b> con rilasci incrementali.`},
+   {k:'2 · Interoperabilità (ModI)',v:`Non chiedere le <b>visure camerali</b> all'impresa: API del <b>Registro Imprese via PDND</b> (Once-Only).`},
+   {k:'3 · Sicurezza e Cloud',v:`Dati sulle attività produttive = Critici/Ordinari → <b>Cloud qualificato ACN</b>, preferendo <b>SaaS secure by design</b>.`},
+   {k:'4 · Procurement (Appalti)',v:`Affidamento ex <b>D.Lgs. 36/2023</b>; capitolato con <b>SLA</b> stringenti (99,9%) e obbligo di codice <b>Open Source</b> per il riuso (art. 69 CAD).`}
+  ]}
+];
+
+/* ---- TEST FLASH (10 casi rapidi) — recupero attivo ---- */
+const TEST=[
+ {id:'t1',m:1,titolo:'App comunale per i passi carrabili',dom:`Il Comune X crea un'app per pagare i passi carrabili chiedendo al cittadino codice fiscale, carta d'identità e dati catastali. Da EP, quali criticità sollevi rispetto alle Linee Guida AgID?`,
+  punti:[{k:'Violazione Once-Only',v:`Non chiedere carta d'identità e dati catastali: prelevarli via API da <b>ANPR</b> e <b>Agenzia delle Entrate</b> attraverso la <b>PDND</b>.`},
+   {k:'Piattaforme abilitanti',v:`Niente app proprietaria: servizio integrato in <b>App IO</b> per le notifiche; pagamenti obbligatoriamente su <b>pagoPA</b>.`}]},
+ {id:'t2',m:2,titolo:'Migrazione del CUP di un\'ASL',dom:`Un'ASL migra il sistema di prenotazione visite (CUP). Che tipo di dati tratta e quale modello Cloud (IaaS/PaaS/SaaS) riduce gli oneri sistemistici?`,
+  punti:[{k:'Classificazione',v:`Dati sanitari = <b>Critici</b> (sensibili, art. 9 GDPR) → <b>Cloud qualificato ACN</b> ad alta sicurezza.`},
+   {k:'Modello di servizio',v:`<b>SaaS</b> qualificato per azzerare patching/hardware; in alternativa <b>PaaS</b> se serve personalizzazione; scartare <b>IaaS</b> (troppi oneri).`}]},
+ {id:'t3',m:1,titolo:'Attacco al portale demografico (12 ore)',dom:`Un attacco rende inaccessibile il portale dei servizi demografici; i dati dei cittadini sono cifrati. Quali sono i primi tre passi formali e tecnici nelle prime 12 ore?`,
+  punti:[{k:'Contenimento tecnico',v:`Isola la rete dei server demografici per bloccare il <b>movimento laterale</b> del malware.`},
+   {k:'Catena di comando + forensics',v:`Attiva l'<b>Incident Response Team</b> e cristallizza i <b>log</b> (no spegnimento: dati volatili in RAM).`},
+   {k:'Adempimento normativo',v:`Avvia la notifica <b>Data Breach al Garante</b> (72h, art. 33 GDPR) e la segnalazione al <b>CSIRT Italia (ACN)</b>.`}]},
+ {id:'t4',m:2,titolo:'Archivi storici INPS',dom:`L'INPS migra i server con gli archivi storici di pensioni e invalidità di tutti i cittadini. Classificazione e destinazione infrastrutturale?`,
+  punti:[{k:'Classificazione',v:`<b>Strategici</b>: l'intero archivio nazionale impatta la continuità operativa dello Stato (non solo Critici).`},
+   {k:'Destinazione',v:`<b>PSN (Polo Strategico Nazionale)</b> obbligatorio.`}]},
+ {id:'t5',m:2,titolo:'Protocollo monolitico obsoleto',dom:`Un Ministero ha un sistema di protocollo monolitico su server locale obsoleto, con blocchi e manutenzione continua e IT sotto organico. Quale strategia di migrazione (Rehost/Replatform/Replace) e quale modello di servizio?`,
+  punti:[{k:'Fase transitoria',v:`<b>Rehost / IaaS</b> per togliere subito l'app dall'hardware obsoleto a rischio guasto.`},
+   {k:'Soluzione definitiva',v:`<b>Replace</b> con <b>SaaS</b> qualificato ACN: azzera gli oneri sistemistici, conforme alle Linee Guida AgID sul protocollo.`}]},
+ {id:'t6',m:2,titolo:'ML per contributi alle famiglie',dom:`Un Comune vuole un modello di Machine Learning che selezioni automaticamente i beneficiari di un contributo, senza controllo degli assistenti sociali. Quali rilievi su trasparenza, etica e normativa?`,
+  punti:[{k:'Alto rischio → DPIA',v:`Gestione di sussidi/graduatorie = sistema IA ad <b>Alto Rischio</b> (AI Act) → obbligo di <b>DPIA</b> (art. 35 GDPR).`},
+   {k:'Human-in-the-loop',v:`Illegittima la <b>non esclusività</b> senza supervisione umana: servono gli assistenti sociali nella validazione.`},
+   {k:'Trasparenza e spiegabilità',v:`Il cittadino deve poter capire la logica della decisione algoritmica.`}]},
+ {id:'t7',m:3,titolo:'Fornitore con demo al mese 17',dom:`Il fornitore del nuovo portale propone 18 mesi di lavoro con la prima demo funzionante al mese 17 (collaudo finale). Perché rigetti l'approccio e quale metodologia imponi?`,
+  punti:[{k:'Rigetto del Waterfall',v:`Approccio a cascata deprecato: i problemi emergono troppo tardi (big-bang al collaudo).`},
+   {k:'Agile / Scrum',v:`<b>Sprint</b> (bi)settimanali con incrementi funzionanti; <b>Product Owner</b> in raccordo col committente.`},
+   {k:'DevOps / CI-CD',v:`Pipeline con <b>test automatici</b> e rilasci continui per intercettare subito i difetti.`}]},
+ {id:'t8',m:3,titolo:'Capitolato a righe di codice',dom:`Un capitolato stima il costo solo sulle righe di codice (KLOC) e per la sicurezza richiama il "buonsenso dei programmatori". Come correggi la stima e gli standard?`,
+  punti:[{k:'Stima',v:`Sostituire i KLOC con i <b>Function Points (ISO/IEC 20926)</b>: misurano le funzionalità erogate.`},
+   {k:'Qualità',v:`Imporre lo standard <b>ISO/IEC 25010</b> (Security by Design/Default).`},
+   {k:'Sicurezza',v:`Rispetto delle <b>misure minime ACN / NIS 2</b> e del regolamento <b>eIDAS</b> per firme e identità.`}]},
+ {id:'t9',m:4,titolo:'Licenza da 150.000 € in affidamento diretto',dom:`Un Comune vuole comprare una licenza proprietaria da 150.000 € con affidamento diretto al primo fornitore trovato online. Quali passaggi obbligatori esigi (CAD e Codice Appalti)?`,
+  punti:[{k:'Riuso (art. 69 CAD)',v:`Prima valutazione comparativa su <b>Developers Italia</b>: verificare un software open source/in riuso già disponibile.`},
+   {k:'Procedura (D.Lgs. 36/2023)',v:`Niente ricerca libera online: passare da <b>MePA / Consip</b> (Accordo Quadro), con <b>rotazione</b> e <b>SLA</b> contrattuali rigidi.`}]},
+ {id:'t10',m:4,titolo:'Blocco budget e rifiuto FOIA',dom:`L'ufficio finanziario blocca la migrazione cloud perché "non ci sono fondi per comprare server a cespite"; l'Ente rifiuta a un cittadino i dati sull'avanzamento ICT chiedendo "a che titolo?". Come correggi i due errori?`,
+  punti:[{k:'Budget (CapEx→OpEx)',v:`Il cloud elimina l'acquisto di server a cespite (<b>CapEx</b>) e sposta la spesa su canoni correnti (<b>OpEx</b>, pay-per-use), da allocare sulle uscite correnti ICT nel <b>PIAO</b>.`},
+   {k:'Trasparenza / FOIA',v:`Rifiuto illegittimo: l'<b>Accesso Civico Generalizzato</b> (D.Lgs. 33/2013) non richiede interesse qualificato; i dati (specie PNRR) vanno resi trasparenti e in Open Data.`}]}
+];
+
+/* ---- 10 COMANDAMENTI ---- */
+const CMD=[
+ ['CAD','Digital First, Once-Only, Domicilio digitale: il cittadino non fornisce mai dati che la PA già possiede.'],
+ ['Interoperabilità','ModI (API REST/SOAP) + PDND (catalogo di E-Service per lo scambio machine-to-machine).'],
+ ['Piattaforme abilitanti','Obbligo di SPID/CIE (eIDAS), pagoPA (incassi) e App IO (notifiche).'],
+ ['Cloud & Migrazione','Ordinari/Critici → Cloud qualificato ACN; Strategici → PSN. Prediligere SaaS/PaaS (Replace/Replatform).'],
+ ['Dati, Semantica & IA','Metadatazione DCAT-AP_IT, ontologie OntoPiA. IA ad Alto Rischio → DPIA, spiegabilità, Human-in-the-loop.'],
+ ['Project Management','Superare il Waterfall: Agile/Scrum (Sprint) e cultura DevOps / CI-CD.'],
+ ['Qualità & Metriche','Stima con i Function Points (non KLOC); qualità secondo ISO/IEC 25010.'],
+ ['Sicurezza & Normativa','Misure minime ACN, direttiva NIS 2 (notifica incidenti), regolamento eIDAS.'],
+ ['Appalti ICT','Principio del Risultato (D.Lgs. 36/2023); riuso su Developers Italia (art. 69 CAD); MePA/Consip con SLA.'],
+ ['Budget & Trasparenza','Budget da CapEx a OpEx; digitalizzazione nel PIAO; accesso FOIA (D.Lgs. 33/2013).']
+];
+
+/* ---- FLASHCARD cloze (per modulo) ---- */
+const CARDS=[
+ // M1
+ {m:1,f:'Il CAD è il D.Lgs. {…} ed è la "Costituzione" della PA digitale',b:'D.Lgs. 82/2005'},
+ {m:1,f:'Il domicilio digitale è disciplinato dall\'art. {…} del CAD; i registri sono {…} e {…}',b:'art. 3-bis — INAD e INI-PEC'},
+ {m:1,f:'Due principi cardine del CAD: {…} (servizi nativi digitali) e {…} (dato chiesto una sola volta)',b:'Digital by Default / Digital First — Once-Only'},
+ {m:1,f:'Il ModI impone API {…} e protocolli di sicurezza: mutual {…} e token {…}',b:'REST/SOAP — TLS — OAuth2'},
+ {m:1,f:'I tre livelli di interoperabilità del ModI sono: {…}, {…}, {…}',b:'tecnico, semantico, organizzativo'},
+ {m:1,f:'Sulla PDND: l\'ente che ha il dato pubblica un {…}; l\'ente che lo usa chiede l\'{…}; la PDND fa da {…}',b:'E-Service — abilitazione — orchestratore'},
+ {m:1,f:'Tranello: la PDND NON è un database centrale, i dati restano nei {…} dell\'ente titolare',b:'server (sulla PDND viaggia solo la chiamata/E-Service)'},
+ {m:1,f:'SPID e CIE garantiscono autenticazione certa a livello europeo grazie al regolamento {…}',b:'eIDAS'},
+ {m:1,f:'La PA ha l\'obbligo di incassare ogni spettanza tramite {…}, con riconciliazione contabile {…}',b:'pagoPA — automatica'},
+ {m:1,f:'Il punto di contatto unico mobile tra PA e cittadino per notifiche e scadenze è {…}',b:'App IO'},
+ // M2
+ {m:2,f:'La classificazione dei dati (art. 33-septies, D.L. 179/2012) prevede tre classi: {…}, {…}, {…}',b:'Ordinari, Critici, Strategici'},
+ {m:2,f:'I dati Ordinari e Critici vanno su {…}; i dati Strategici obbligatoriamente sul {…}',b:'Cloud qualificato ACN — PSN (Polo Strategico Nazionale)'},
+ {m:2,f:'Un dato sensibile è di per sé {…}; diventa {…} se la compromissione impatta la sicurezza nazionale',b:'Critico — Strategico'},
+ {m:2,f:'Oneri crescenti per la PA: minimi nel {…}, medi nel {…}, alti nell\'{…}',b:'SaaS — PaaS — IaaS'},
+ {m:2,f:'Il paradigma AgID che privilegia il software pronto è il {…}',b:'Cloud First (preferenza per il SaaS)'},
+ {m:2,f:'Le 3 strategie di migrazione (6R AgID/ACN): {…} (lift & shift), {…} (cloud native), {…} (SaaS)',b:'Rehost, Replatform/Refactor, Replace'},
+ {m:2,f:'Il profilo nazionale di metadatazione dei dataset Open Data è {…}; la rete di ontologie AgID è {…}',b:'DCAT-AP_IT — OntoPiA'},
+ {m:2,f:'OntoPiA usa il formato Linked Open Data {…}',b:'RDF/OWL'},
+ {m:2,f:'Principi delle Linee Guida AgID sull\'IA: trasparenza, {…} e non esclusività della decisione ({…})',b:'spiegabilità — Human-in-the-loop'},
+ {m:2,f:'I sistemi IA della PA per sussidi/graduatorie sono ad {…} e richiedono una {…} (art. 35 GDPR)',b:'Alto Rischio (AI Act) — DPIA'},
+ // M3
+ {m:3,f:'In Scrum lo Sprint dura di norma {…} e produce un {…}',b:'2–4 settimane — incremento di software funzionante'},
+ {m:3,f:'Ruoli Scrum: {…} (backlog/requisiti), {…} (facilita), {…} (sviluppa e testa)',b:'Product Owner, Scrum Master, Development Team'},
+ {m:3,f:'La cultura che integra Sviluppo e Operations con pipeline di test/rilascio automatici è {…} ({…})',b:'DevOps — CI/CD'},
+ {m:3,f:'La dimensione del software si stima con i {…} (ISO/IEC 20926), non con le {…}',b:'Function Points — righe di codice (KLOC)'},
+ {m:3,f:'La norma internazionale sulla qualità del software è {…}',b:'ISO/IEC 25010'},
+ {m:3,f:'Il regolamento su identità elettronica e servizi fiduciari (firme, PEC, wallet) è {…} (UE {…})',b:'eIDAS — UE 910/2014'},
+ {m:3,f:'La direttiva che alza i requisiti di sicurezza e notifica incidenti per PA e infrastrutture critiche è la {…} (UE {…})',b:'NIS 2 — UE 2022/2555'},
+ // M4
+ {m:4,f:'Il nuovo Codice degli Appalti è il {…}; i suoi principi cardine sono quello del {…} e della {…}',b:'D.Lgs. 36/2023 — Risultato — Fiducia'},
+ {m:4,f:'Prima di acquistare software la PA deve verificare il riuso su {…}, ex art. {…} del CAD',b:'Developers Italia — art. 69'},
+ {m:4,f:'Sotto soglia gli acquisti ICT passano da {…} o Accordi Quadro {…}',b:'MePA — Consip'},
+ {m:4,f:'Nei contratti ICT vanno previsti {…} vincolanti (es. disponibilità 99,9%) e il rilascio del codice in {…}',b:'SLA — Open Source'},
+ {m:4,f:'Il cloud sposta il budget da {…} (server a cespite) a {…} (canoni pay-per-use)',b:'CapEx — OpEx'},
+ {m:4,f:'La misurazione della performance è disciplinata dal D.Lgs. {…}; il documento triennale unico è il {…}',b:'D.Lgs. 150/2009 — PIAO'},
+ {m:4,f:'Il PIAO assorbe: Piano della Performance, Piano anticorruzione (PTPC) e Piano Triennale per l\'{…} ({…})',b:'Informatica — PTIPA'},
+ {m:4,f:'La trasparenza è disciplinata dal D.Lgs. {…}; il diritto di accesso senza motivazione è il {…}',b:'D.Lgs. 33/2013 — FOIA (accesso civico generalizzato)'}
+];
+
+/* ---- PIANO 6 ORE ---- */
+const PLAN=[
+ {ph:'Modulo 1',ico:'now',title:'CAD · Interoperabilità · Piattaforme',min:'~90 min',tasks:[
+  ['Studia il Bignami — Modulo 1 (apri i 3 passi)',30],['Test flash 1, 2, 3 (recupero attivo)',30],['Flashcard: filtro Modulo 1',20],['Ascolta il Modulo 1 (Audio) per fissare',10]]},
+ {ph:'Modulo 2',ico:'',title:'Cloud · Migrazione · Dati e IA',min:'~90 min',tasks:[
+  ['Studia il Bignami — Modulo 2',30],['Test flash 4, 5, 6',30],['Flashcard: filtro Modulo 2',20],['Concetti: piramide dati, stack cloud, 6R',10]]},
+ {ph:'Modulo 3',ico:'',title:'Agile · Qualità software · Normazione',min:'~90 min',tasks:[
+  ['Studia il Bignami — Modulo 3',30],['Test flash 7, 8',20],['Flashcard: filtro Modulo 3',20],['Prova 4 (KPI) col recupero attivo',20]]},
+ {ph:'Modulo 4',ico:'',title:'Appalti · Budget · Performance + sintesi',min:'~90 min',tasks:[
+  ['Studia il Bignami — Modulo 4',25],['Test flash 9, 10',20],['Traccia d\'esame finale (Prove): scrivila di getto',25],['Ripassa i 10 comandamenti + Strategia',20]]},
+ {ph:'Prima della prova',ico:'',title:'Rifinitura last-minute',min:'~30 min',tasks:[
+  ['Ripasso Audio veloce di moduli e comandamenti (mani libere)',15],['Flashcard: solo le carte ancora deboli',15]]}
+];
+
+/* =================== STATO =================== */
+const KEY='agid_ep_v2';
+let S;try{S=JSON.parse(localStorage.getItem(KEY))||{}}catch(e){S={}}
+S.tasks=S.tasks||{};S.srs=S.srs||{};S.check=S.check||{};S.rev=S.rev||{};S.rate=S.rate||1;S.fmods=S.fmods||[1,2,3,4];
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+function strip(s){return String(s).replace(/<[^>]+>/g,'').replace(/&amp;/g,'&').replace(/\{…\}/g,'…')}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+CARDS.forEach((c,i)=>c.id='c'+i);
+
+/* =================== COUNTDOWN =================== */
+function paintCountdown(){const d=new Date(EXAM_DATE)-new Date();const b=document.getElementById('cdBig'),s=document.getElementById('cdSm');
+ if(d<=0){b.textContent='OGGI';s.textContent='In bocca al lupo!';return}
+ const h=Math.floor(d/3.6e6),gg=Math.floor(h/24),hh=h%24,mm=Math.floor(d/6e4)%60;
+ if(gg>=1){b.textContent=gg+(gg===1?' giorno':' giorni');s.textContent=hh+'h '+mm+'m'}else{b.textContent=hh+'h '+mm+'m';s.textContent='ultimo sprint'}}
+
+/* =================== TTS =================== */
+let voiceIT=null;
+function loadVoices(){const vs=window.speechSynthesis?speechSynthesis.getVoices():[];voiceIT=vs.find(v=>v.lang==='it-IT')||vs.find(v=>v.lang&&v.lang.toLowerCase().startsWith('it'))||null}
+if('speechSynthesis'in window){speechSynthesis.onvoiceschanged=loadVoices;loadVoices()}
+function ttsOK(){return 'speechSynthesis'in window}
+function speak(text,onend){if(!ttsOK()){alert('Sintesi vocale non supportata da questo browser.');return}
+ speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(strip(text));if(voiceIT)u.voice=voiceIT;u.lang='it-IT';u.rate=parseFloat(S.rate)||1;if(onend)u.onend=onend;speechSynthesis.speak(u)}
+function speakOne(text){speak(text)}
+function sBtn(t){return ttsOK()?`<button class="speak" onclick='speakOne(${JSON.stringify(t)})'>▶ Ascolta</button>`:''}
+
+/* =================== ROUTER =================== */
+const TABS=[['sprint','Sprint 6h'],['moduli','Bignami'],['prove','Prove'],['test','Test flash'],['concetti','Concetti'],['flash','Flashcard'],['audio','Audio'],['strategia','Strategia']];
+let cur='sprint',flashState=null,player=null;
+function paintTabs(){document.getElementById('tabbar').innerHTML=TABS.map(([id,l])=>`<button class="tab" role="tab" aria-selected="${cur===id}" onclick="go('${id}')">${l}</button>`).join('')}
+function go(t){if(cur==='audio'&&t!=='audio')stopPlayer();cur=t;paintTabs();render()}
+function render(){const v=document.getElementById('view');
+ if(cur==='sprint')v.innerHTML=rSprint();
+ else if(cur==='moduli')v.innerHTML=rModuli();
+ else if(cur==='prove')v.innerHTML=rRecall(PROVE,'Le prove d\'esame','Per ogni traccia prova a costruire la risposta a mente o su carta, poi scopri la soluzione guidata e spunta i punti centrati.');
+ else if(cur==='test')v.innerHTML=rRecall(TEST,'Test flash · 10 casi rapidi','Micro-casi in stile esame: rispondi in due righe a mente, poi rivela i punti-chiave e autovalutati.');
+ else if(cur==='concetti')v.innerHTML=rConcetti();
+ else if(cur==='flash')rFlash(v);
+ else if(cur==='audio')rAudio(v);
+ else v.innerHTML=rStrategia();
+ window.scrollTo(0,0)}
+
+/* =================== SPRINT =================== */
+function rSprint(){
+ let h=`<h2>Sprint 6 ore · Bignami AGID01</h2><p class="sub">Concorso Unico RIPAM — Area <b>Elevate Professionalità AGID</b> (AGID01). Prova a <b>risposta aperta</b> e <b>casi gestionali</b> su competenze tecnico-digitali <b>e</b> manageriali. Preparazione chirurgica: parole chiave giuste, struttura, fonti citate.</p>`;
+ h+=`<div class="card"><span class="eyebrow">Conosci l'ente · funzioni AGID</span>`;
+ ENTE.funzioni.forEach(f=>{h+=`<div class="kv"><b>${f[0]}</b><span class="d">${f[1]}</span></div>`});
+ h+=`</div><div class="card"><span class="eyebrow">Profilo AGID01 · 3 pilastri</span>`;
+ ENTE.profilo.forEach(f=>{h+=`<div class="kv"><b>${f[0]}</b><span class="d">${f[1]}</span></div>`});
+ h+=`<p class="note">Le EP non eseguono: <b>governano</b> (visione d'insieme, rischi, fornitori/SLA, budget, misurazione con KPI).</p></div>`;
+ PLAN.forEach((p,pi)=>{const done=p.tasks.every((_,i)=>S.tasks[`p${pi}t${i}`]);const nd=p.tasks.filter((_,i)=>S.tasks[`p${pi}t${i}`]).length;
+  h+=`<div class="day ${done?'done':(p.ico||'')}"><h3>${p.ph} — ${p.title}</h3><div class="dmeta">${p.min} · <b style="color:var(--ok)">${nd}/${p.tasks.length}</b>${p.ico==='now'?' · <b style="color:#C99700">INIZIA DA QUI</b>':''}</div>`;
+  p.tasks.forEach((t,i)=>{const k=`p${pi}t${i}`;h+=`<div class="task ${S.tasks[k]?'done':''}"><input type="checkbox" id="${k}" ${S.tasks[k]?'checked':''} onchange="tgl('${k}')"><label for="${k}">${t[0]}</label><span class="min">${t[1]}′</span></div>`});
+  h+=`</div>`});
+ return h}
+function tgl(k){S.tasks[k]=!S.tasks[k];save();render()}
+
+/* =================== BIGNAMI =================== */
+function rModuli(){
+ let h=`<h2>Bignami · 4 moduli · 13 materie</h2><p class="sub">Teoria flash iper-condensata. Apri i passi, leggi i concetti-chiave e usa il pulsante <b>Ascolta</b> per il ripasso uditivo. Poi verifica con i Test flash.</p>`;
+ MODULI.forEach(m=>{
+  h+=`<div class="card"><div class="concept-h"><div style="display:flex;align-items:center;gap:10px"><span class="mtag">${m.n}</span><div><h3 style="font-size:1.02rem">${esc(m.tit)}</h3><span class="pillar">${m.mat}</span></div></div>${ttsOK()?`<button class="speak" onclick="speakModulo(${m.n})">▶ Ascolta modulo</button>`:''}</div>`;
+  m.passi.forEach((ps,pi)=>{h+=`<details class="passo" ${pi===0?'open':''}><summary>${esc(ps.h)}</summary><div class="body">`;
+   ps.kv.forEach(kv=>{h+=`<div class="kv"><b>${kv[0]}</b><span class="d">${kv[1]}</span></div>`});
+   h+=`</div></details>`});
+  h+=`</div>`});
+ return h}
+function speakModulo(n){const m=MODULI.find(x=>x.n===n);let t=`Modulo ${n}. ${m.tit}. `;m.passi.forEach(ps=>{t+=ps.h+'. ';ps.kv.forEach(kv=>{t+=kv[0]+'. '+strip(kv[1])+'. '})});speakOne(t)}
+
+/* =================== RECUPERO ATTIVO (Prove + Test) =================== */
+function rRecall(LIST,title,sub){
+ let h=`<h2>${title}</h2><p class="sub">${sub}</p>`;
+ LIST.forEach((p,pi)=>{const rv=S.rev[p.id];const isTest=!!p.m;
+  h+=`<div class="card"><div class="concept-h"><span class="ptag ${isTest?'test':p.tipo}">${isTest?('Test flash '+(pi+1)+' · Modulo '+p.m):p.tag}</span>${ttsOK()?`<button class="speak" onclick="speakRecall('${cur}',${pi})">▶ Ascolta</button>`:''}</div>
+  <h3 style="margin:8px 0 2px">${esc(p.titolo)}</h3>${p.pillar?`<div class="pillar">${p.pillar}</div>`:''}`;
+  h+=`<div class="traccia">${p.contesto?`<b>Contesto.</b> ${esc(p.contesto)}<br>`:''}<span class="q">${esc(p.dom||p.domanda)}</span></div>`;
+  if(!rv){h+=`<div class="btnrow"><button class="btn" onclick="reveal('${p.id}')">Ho provato: mostra la soluzione ↓</button></div><p class="note">Elenca a mente i punti che citeresti, poi confronta.</p>`}
+  else{h+=`<span class="eyebrow">Punti-chiave — spunta ciò che avevi centrato</span>`;
+   p.punti.forEach((pt,i)=>{const ck=S.check[`${p.id}_${i}`];h+=`<div class="point ${ck?'ck':''}"><input type="checkbox" ${ck?'checked':''} onchange="chk('${p.id}',${i})"><div><span class="pk">${pt.k}</span><span class="pv">${pt.v}</span></div></div>`});
+   const tot=p.punti.length,got=p.punti.filter((_,i)=>S.check[`${p.id}_${i}`]).length;
+   h+=`<p class="note">Autovalutazione: <span class="selfscore">${got}/${tot}</span> ${got===tot?'· ottimo':(got>=Math.ceil(tot/2)?'· quasi':'· da rivedere')}. <button class="btn sec sm" style="margin-left:8px" onclick="hideAgain('${p.id}')">Nascondi e riprova</button></p>`}
+  h+=`</div>`});
+ return h}
+function reveal(id){S.rev[id]=1;save();render()}
+function hideAgain(id){S.rev[id]=0;const p=[...PROVE,...TEST].find(x=>x.id===id);p.punti.forEach((_,i)=>delete S.check[`${id}_${i}`]);save();render()}
+function chk(id,i){const k=`${id}_${i}`;S.check[k]=!S.check[k];save();render()}
+function speakRecall(tab,pi){const p=(tab==='prove'?PROVE:TEST)[pi];let t=`${p.titolo}. ${p.dom||p.domanda} Soluzione. `;p.punti.forEach(pt=>{t+=pt.k+'. '+strip(pt.v)+'. '});speakOne(t)}
+
+/* =================== CONCETTI =================== */
+function rConcetti(){
+ let h=`<h2>Concetti chiave · schemi visivi</h2><p class="sub">Gli schemi che reggono l'intera prova. Ogni scheda è anche ascoltabile.</p>`;
+ h+=`<div class="card"><div class="concept-h"><span class="eyebrow">1 · Classificazione dei dati (ACN/AgID)</span>${sBtn('Classificazione dati: ordinari, critici, strategici. Gli anagrafici dei cittadini sono strategici e vanno sul Polo Strategico Nazionale.')}</div>
+ <div class="pyr"><div class="lvl l3">STRATEGICI<span class="cap">sicurezza nazionale → PSN</span></div><div class="lvl l2">CRITICI<span class="cap">funzioni essenziali / sensibili → Cloud qualificato ACN</span></div><div class="lvl l1">ORDINARI<span class="cap">Cloud qualificato ACN standard</span></div></div></div>`;
+ h+=`<div class="card"><div class="concept-h"><span class="eyebrow">2 · Modelli di servizio + strategie 6R</span>${sBtn('Modelli cloud: IaaS oneri alti, PaaS medi, SaaS minimi. Strategie di migrazione: rehost, replatform, replace.')}</div>
+ <div class="stack"><div class="row"><div class="lab">IaaS</div><div class="desc">Infrastruttura/VM · oneri <b>alti</b> · migrazione <b>Rehost</b> (transitoria)</div></div>
+ <div class="row"><div class="lab">PaaS</div><div class="desc">Piattaforma/DBaaS · oneri <b>medi</b> · migrazione <b>Replatform/Refactor</b> (cloud native)</div></div>
+ <div class="row"><div class="lab">SaaS</div><div class="desc">Software pronto · oneri <b>minimi</b> · migrazione <b>Replace</b> · paradigma <b>Cloud First</b></div></div></div></div>`;
+ h+=`<div class="card"><div class="concept-h"><span class="eyebrow">3 · Incident Response — prime 48 ore</span>${sBtn('Incident response: ore zero-quattro isolamento senza spegnere; ore quattro-ventiquattro notifica ad ACN via CSIRT e al Garante entro 72 ore; ore ventiquattro-quarantotto ripristino da immagini pulite.')}</div>
+ <div class="tl"><div class="step"><span class="t">0–4h · Contenimento</span><span class="h">Isola, NON spegnere</span><span class="d">Prove volatili in RAM (forensics); Unità di Crisi.</span></div>
+ <div class="step"><span class="t">4–24h · Notifica</span><span class="h">ACN via CSIRT + Garante</span><span class="d">Data breach → Garante 72h (art. 33 GDPR).</span></div>
+ <div class="step"><span class="t">24–48h · Ripristino</span><span class="h">Immagini pulite + DR</span><span class="d">Backup non cifrati; servizi prioritari.</span></div></div></div>`;
+ h+=`<div class="card"><div class="concept-h"><span class="eyebrow">4 · Interoperabilità: ModI → PDND → Once-Only</span>${sBtn('Il modello di interoperabilità definisce le regole; la PDND è il catalogo degli e-service; il risultato è il principio once-only.')}</div>
+ <div class="flow"><div class="node">ModI<small>regole + API</small></div><span class="arr">→</span><div class="node">PDND<small>catalogo E-Service · OAuth2</small></div><span class="arr">→</span><div class="node">Once-Only<small>dato chiesto 1 volta</small></div></div></div>`;
+ h+=`<div class="card"><div class="concept-h"><span class="eyebrow">5 · Budget: dal data center al cloud</span>${sBtn('Il cloud sposta il budget da CapEx, cioè acquisto di server a cespite, a OpEx, cioè canoni correnti pay per use.')}</div>
+ <div class="flow"><div class="node" style="border-color:var(--err)">CapEx<small>server a cespite (una tantum)</small></div><span class="arr">→</span><div class="node" style="border-color:var(--ok)">OpEx<small>canoni cloud pay-per-use</small></div></div>
+ <p class="note">Il PNRR copre soprattutto <b>CapEx</b>; il cloud a regime è <b>OpEx</b>, da allocare sulle uscite correnti nel <b>PIAO</b>.</p></div>`;
+ h+=`<div class="card"><div class="concept-h"><span class="eyebrow">6 · KPI delle piattaforme abilitanti (PNRR M1C1)</span>${sBtn('KPI: per SPID percentuale di accessi con identità digitale; per pagoPA tasso di digitalizzazione degli incassi; per App IO servizi integrati e risparmio da dematerializzazione.')}</div>
+ <div class="kpicard"><h4>SPID / CIE</h4><ul><li>% accessi con identità digitale; dismissione vecchie credenziali</li><li>tempo medio di login (qual.)</li></ul></div>
+ <div class="kpicard"><h4>pagoPA</h4><ul><li>tasso di digitalizzazione incassi; tempi di riconciliazione</li></ul></div>
+ <div class="kpicard"><h4>App IO</h4><ul><li>servizi integrati; notifiche inviate; risparmio da dematerializzazione</li></ul></div></div>`;
+ h+=`<div class="card"><div class="concept-h"><span class="eyebrow">7 · I 10 comandamenti (sintesi)</span>${sBtn('I dieci comandamenti di sintesi: '+CMD.map((c,i)=>(i+1)+'. '+c[0]+': '+c[1]).join(' '))}</div>
+ <table class="cmd"><tr><th>#</th><th>Dominio</th><th>Concetto chiave</th></tr>${CMD.map((c,i)=>`<tr><td>${i+1}</td><td>${c[0]}</td><td>${c[1]}</td></tr>`).join('')}</table></div>`;
+ return h}
+
+/* =================== FLASHCARD =================== */
+const INTERVALS=[0,1,2,4,7];
+function poolCards(){return CARDS.filter(c=>S.fmods.includes(c.m))}
+function dueCards(){const now=Date.now();return poolCards().filter(c=>{const s=S.srs[c.id];return !s||s.due<=now})}
+function rFlash(v){
+ if(!flashState){const due=dueCards();
+  v.innerHTML=`<h2>Flashcard · ripetizione spaziata</h2><p class="sub">Terminologia, sigle, articoli e numeri in formato cloze (Leitner). Filtra per modulo per allineare il ripasso allo Sprint.</p>
+  <div class="card"><span class="eyebrow">Filtra per modulo</span><div class="tagpick">${[1,2,3,4].map(m=>`<button class="tbtn ${S.fmods.includes(m)?'on':''}" onclick="toggleMod(${m})">Modulo ${m}</button>`).join('')}</div>
+  <p class="note" style="margin-top:0">Carte nel filtro: ${poolCards().length} · in scadenza ora: <b>${due.length}</b></p>
+  <div class="btnrow">${due.length?`<button class="btn" onclick="startFlash()">Inizia ripasso (${due.length})</button>`:''}<button class="btn sec" onclick="startFlashAll()">Ripassa tutte (${poolCards().length})</button></div></div>`;return}
+ const c=flashState.list[flashState.i];
+ v.innerHTML=`<h2>Flashcard</h2><p class="fmeta">Carta ${flashState.i+1} di ${flashState.list.length} · Modulo ${c.m}</p>
+ <div class="fcard" role="button" tabindex="0" onclick="flip()" onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();flip()}">
+ <span class="side">${flashState.back?'RISPOSTA':'COMPLETA — tocca per girare'}</span>
+ <p class="txt">${flashState.back?esc(c.b):esc(c.f).replace(/\{…\}/g,'<span class="gap">&nbsp;…&nbsp;</span>')}</p></div>
+ ${flashState.back?`<div class="srsrow"><button class="btn again" onclick="grade(0)">Di nuovo</button><button class="btn hard" onclick="grade(1)">Difficile</button><button class="btn good" onclick="grade(2)">La so</button></div>
+  <div class="btnrow" style="justify-content:center">${sBtn(strip(c.f)+'. '+strip(c.b))}</div>`
+ :`<div class="btnrow" style="justify-content:center"><button class="btn" onclick="flip()">Mostra risposta</button>${sBtn(strip(c.f))}</div>`}
+ <p class="note" style="text-align:center"><span class="kbd">Di nuovo</span> torna subito · <span class="kbd">La so</span> si allontana nel tempo</p>`}
+function toggleMod(m){const i=S.fmods.indexOf(m);if(i>=0){if(S.fmods.length>1)S.fmods.splice(i,1)}else S.fmods.push(m);save();render()}
+function startFlash(){flashState={list:shuffle(dueCards()),i:0,back:false};render()}
+function startFlashAll(){flashState={list:shuffle(poolCards()),i:0,back:false};render()}
+function flip(){flashState.back=!flashState.back;render()}
+function grade(g){const c=flashState.list[flashState.i];let s=S.srs[c.id]||{box:0};
+ if(g===0)s.box=0;else if(g===1)s.box=Math.max(0,s.box||0);else s.box=Math.min(4,(s.box||0)+1);
+ s.due=Date.now()+(g===0?60000:INTERVALS[s.box]*864e5);S.srs[c.id]=s;save();
+ if(flashState.i+1<flashState.list.length){flashState.i++;flashState.back=false;render()}
+ else{document.getElementById('view').innerHTML=`<h2>Flashcard</h2><div class="card" style="text-align:center"><span class="eyebrow">Sessione completata</span><p class="result-big">✓</p><div class="btnrow" style="justify-content:center"><button class="btn" onclick="flashState=null;render()">Torna alle flashcard</button></div></div>`;flashState=null}}
+
+/* =================== AUDIO =================== */
+function buildPlaylist(){const pl=[];
+ MODULI.forEach(m=>{let t=`Modulo ${m.n}. ${m.tit}. `;m.passi.forEach(ps=>{t+=ps.h+'. ';ps.kv.forEach(kv=>{t+=kv[0]+'. '+strip(kv[1])+'. '})});pl.push({title:`Modulo ${m.n} — ${m.tit}`,sub:m.mat,text:t})});
+ pl.push({title:'Le 4 prove + traccia finale',sub:'Domande e soluzioni guidate',text:PROVE.map((p,i)=>`Prova ${i+1}. ${p.titolo}. ${p.dom||p.domanda} Soluzione. `+p.punti.map(pt=>pt.k+'. '+strip(pt.v)).join('. ')).join(' ')});
+ pl.push({title:'10 comandamenti',sub:'Sintesi finale',text:'I dieci comandamenti. '+CMD.map((c,i)=>(i+1)+'. '+c[0]+'. '+c[1]).join(' ')});
+ pl.push({title:'Ripasso lampo terminologia',sub:'Sigle, articoli e numeri',text:'Ripasso lampo. '+CARDS.map(c=>strip(c.f).replace(/…/g,'')+' '+strip(c.b)+'.').join(' ')});
+ return pl}
+function rAudio(v){
+ if(!ttsOK()){v.innerHTML=`<h2>Audio</h2><div class="card"><p>Sintesi vocale non disponibile in questo browser. Usa Chrome, Edge o Safari aggiornati.</p></div>`;return}
+ const pl=buildPlaylist();if(!player)player={i:0,playing:false};
+ const li=pl.map((s,i)=>`<li class="${player.i===i&&player.playing?'playing':''}" onclick="jumpTo(${i})"><span class="n">${i+1}</span><div style="flex:1">${s.title}<br><small style="color:var(--muted)">${s.sub}</small></div>${player.i===i&&player.playing?'🔊':'▶'}</li>`).join('');
+ v.innerHTML=`<h2>Ripasso audio · mani libere</h2><p class="sub">Ascolta i moduli, le prove e la terminologia mentre fai altro. Regola la velocità per un ripasso più rapido.</p>
+ <div class="audiobar"><button class="iconbtn" onclick="prevTrack()">⏮</button><button class="iconbtn play" onclick="togglePlay()">${player.playing?'⏸':'▶'}</button><button class="iconbtn" onclick="nextTrack()">⏭</button><div class="now">${esc(pl[player.i].title)}<small>${player.playing?'in riproduzione…':'in pausa'}</small></div></div>
+ <div class="card"><span class="eyebrow">Playlist</span><ul class="plist">${li}</ul>
+ <div class="rate"><span>Velocità</span><input type="range" min="0.7" max="1.6" step="0.1" value="${S.rate}" oninput="setRate(this.value)"><span id="rateV" style="font-weight:800;color:var(--navy);min-width:34px">${(+S.rate).toFixed(1)}×</span></div></div>`}
+function playCurrent(){const pl=buildPlaylist();player.playing=true;render();
+ speak(pl[player.i].text,()=>{if(player&&player.playing){if(player.i+1<pl.length){player.i++;playCurrent()}else{player.playing=false;render()}}})}
+function togglePlay(){if(!player)player={i:0,playing:false};if(player.playing){speechSynthesis.cancel();player.playing=false;render()}else playCurrent()}
+function jumpTo(i){player.i=i;speechSynthesis.cancel();playCurrent()}
+function nextTrack(){const pl=buildPlaylist();player.i=Math.min(pl.length-1,player.i+1);speechSynthesis.cancel();player.playing?playCurrent():render()}
+function prevTrack(){player.i=Math.max(0,player.i-1);speechSynthesis.cancel();player.playing?playCurrent():render()}
+function setRate(r){S.rate=parseFloat(r);save();const el=document.getElementById('rateV');if(el)el.textContent=(+r).toFixed(1)+'×'}
+function stopPlayer(){if(ttsOK())speechSynthesis.cancel();if(player)player.playing=false}
+
+/* =================== STRATEGIA =================== */
+function rStrategia(){
+ let h=`<h2>Strategia d'esame · risposta aperta</h2><p class="sub">La commissione corregge centinaia di elaborati: premia struttura, terminologia in grassetto e visione manageriale.</p>`;
+ h+=`<div class="card"><span class="eyebrow">Template di risposta (3–4 punti distinti)</span>
+ <div class="tpl"><b>1. Inquadramento normativo.</b> Il problema e le fonti di riferimento (CAD, Linee Guida AgID, GDPR, PNRR, D.Lgs. 36/2023).<br>
+ <b>2. Scelta architetturale/tecnica.</b> Classificazione dati, modello cloud, interoperabilità (ModI/PDND), sicurezza.<br>
+ <b>3. Impatto gestionale e sostenibilità.</b> Risorse, budget (CapEx/OpEx), fornitori/SLA, rischi e contromisure.<br>
+ <b>4. Misurazione.</b> KPI e indicatori con cui valuti il risultato.</div>
+ <p class="note">Usa paragrafi distinti ed elenchi puntati; evidenzia in grassetto i termini tecnici.</p></div>`;
+ h+=`<div class="card"><span class="eyebrow">Cassetta degli attrezzi — cita queste fonti/sigle</span><div class="chips">
+ ${['CAD (D.Lgs. 82/2005)','ModI · PDND · Once-Only','SPID/CIE · pagoPA · App IO','Classificazione dati · PSN','IaaS/PaaS/SaaS · 6R','DCAT-AP_IT · OntoPiA','AI Act · DPIA · Human-in-the-loop','Agile/Scrum · DevOps · CI/CD','Function Points · ISO/IEC 25010','eIDAS · NIS 2 · misure minime ACN','GDPR art. 33 (72h)','D.Lgs. 36/2023 · art. 69 CAD · MePA/Consip','SLA · Open Source','CapEx/OpEx · PIAO','D.Lgs. 150/2009 · D.Lgs. 33/2013 · FOIA'].map(x=>`<span class="chip b">${x}</span>`).join('')}</div></div>`;
+ h+=`<div class="card"><span class="eyebrow">Lo schema logico che copre l'80% delle tracce</span>
+ <div class="flow"><div class="node">PNRR<small>governance/Agile</small></div><span class="arr">→</span><div class="node">Interoperabilità<small>ModI/PDND</small></div><span class="arr">→</span><div class="node">Sicurezza<small>Cloud/dati</small></div><span class="arr">→</span><div class="node">Appalti<small>SLA/riuso</small></div></div></div>`;
+ h+=`<div class="card"><div class="warnbox"><b>Approccio EP.</b> Non descrivere solo la tecnologia: mostra <b>governo</b> di rischi, fornitori, budget e risultati (KPI). È ciò che distingue l'Elevata Professionalità dall'esecutore.</div>
+ <div class="btnrow"><button class="btn warn sm" onclick="if(confirm('Azzerare tutti i progressi di questa versione?')){localStorage.removeItem(KEY);location.reload()}">Azzera dati</button></div></div>`;
+ return h}
+
+/* =================== BOOT =================== */
+paintTabs();paintCountdown();render();setInterval(paintCountdown,30000);
+</script>
+</body>
+</html>
